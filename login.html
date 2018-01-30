@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale = 1, maximum-scale = 1"/></meta>
+        <title>Baetes demo</title>
+        <script src="js/jquery-1.7.1.min.js"></script>
+        <script src="js/sjcl.js"></script>
+        <script src="js/babylon.js"></script>
+        <script src="js/hand.minified-1.2.js"></script>
+        <script src="js/babylon.js"></script>
+        <style type="text/css">
+            body {
+                background-color:#eee9e6;
+                overflow:hidden;
+            }
+            #area_01 {
+                position:absolute;
+                width:60%;
+                height:20%;
+                left:20%;
+                top:20%;
+            }
+
+            #text_01 {
+                position:absolute;
+                width:100%;
+                height:50%;
+                left:0%;
+                font-family:"IowanOldStyle-Roman";
+                color:black;
+                text-align:center;
+                /*opacity:0;*/
+            }
+
+            #text_01 {
+                top:0%;
+                font-size:280%;
+            }
+
+            #area_02 {
+                position:absolute;
+                width:40%;
+                height:35%;
+                left:30%;
+                top:35%;
+                border-style:solid;
+                border-color:black;
+                border-width:1px;
+            }
+
+            #username, #password {
+                position:absolute;
+                width:80%;
+                height:15%;
+                left:10%;
+                border-style:none none solid none;
+                border-color:black;
+                border-width:1px;
+                background-color:transparent;
+                text-align:center;
+            }
+
+            #username {
+                top:10%;
+            }
+
+            #password {
+                top:35%;
+            }
+
+            #login {
+                position:absolute;
+                width:40%;
+                height:20%;
+                left:30%;
+                top:65%;
+                border-style:solid;
+                border-color:black;
+                border-width:1px;
+                background-color:transparent;
+                cursor:pointer;
+            }
+
+            .btn {
+                position:absolute;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:120%;
+                color:black;
+                text-align:center;
+                border-style:solid;
+                border-color:black;
+                border-width:1px;
+                background:transparent;
+                cursor:pointer;
+            }
+
+            #area_03 {
+                position:absolute;
+                width:20%;
+                height:22%;
+                left:40%;
+                top:75%;
+            }
+
+            #text_06, #copyright {
+                position:absolute;
+                position:absolute;
+                width:100%;
+                height:50%;
+                left:0%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                color:black;
+                text-align:center;
+            }
+
+            #copyright {
+                top:80%;
+                font-size:60%;
+                opacity:0.5;
+            }
+        </style>
+        <script>
+            var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.OIndexedDB || window.msIndexedDB;
+            var baseDeDatos = null;
+            var contact_state = 0;
+            var temp_switch = true;
+            var permission_state = false;
+            var mql = window.matchMedia("(orientation: portrait)");
+
+            //ESTABLECIENDO CONTACTO CON LA BASE DE DATOS INTERNA
+            function start() {
+                baseDeDatos = indexedDB.open('baetes_fe_db_01', 1);
+
+                baseDeDatos.onupgradeneeded = function (e) {
+                    var active = baseDeDatos.result;
+                    var global_variables_object = active.createObjectStore("global_variables", {keyPath: 'id', autoIncrement: true});
+                    global_variables_object.createIndex('Permission', 'permission', {unique: false});
+                };
+
+                baseDeDatos.onsuccess = function (e) {
+                    console.log("Configuracion correctamente accesada");
+                    verificacionDatosPruebas();
+                };
+                
+                baseDeDatos.onerror = function (e) {
+                    alert("Navegador incompatible con configuracion de seguridad");
+                };
+            }
+
+            function verificacionDatosPruebas() {
+                var active = baseDeDatos.result;
+                var data = active.transaction(["global_variables"], "readonly");
+                var object = data.objectStore("global_variables");
+                var elements = [];
+                console.log("wooo");
+                object.openCursor().onsuccess = function (e) {
+                    var result = e.target.result;
+                    if (result === null) {
+                        return false;
+                    }
+                    elements.push(result.value);
+                    result.continue();
+                };
+
+                data.oncomplete = function () {
+                    var contador = 0;
+                    for (var key in elements) {
+                        console.log(contador);
+                        contador = 1;
+                    }
+                    elements = [];
+                    if(contador == 0){
+                        console.log("No hay valores");
+                        var active = baseDeDatos.result;
+                        var data = active.transaction(["global_variables"], "readwrite");
+                        var object = data.objectStore("global_variables");
+                        var request = object.put({
+                            permission: false
+                        });
+                        request.onerror = function (e) {
+                            alert(request.error.name + '\n\n' + request.error.message);
+                        };
+                        data.oncomplete = function (e) {
+                            console.log('Valores de busqueda agregados correctamente');
+                        };
+                    }else if(contador == 1){
+                        /*****************************************************************************/
+                        var active = baseDeDatos.result;
+                        var data = active.transaction(["global_variables"], "readonly");
+                        var object = data.objectStore("global_variables");
+                        var elements = [];
+                        object.openCursor().onsuccess = function (e) {
+                            var result = e.target.result;
+                            if (result === null) {
+                                return false;
+                            }
+                            elements.push(result.value);
+                            result.continue();
+                        };
+
+                        data.oncomplete = function () {
+                            window.permission_state = elements[0].permission;
+                            elements = [];
+                            console.log(window.permission_state);
+                            if(window.permission_state == false){
+                                //GRABANDO CONFIRMACION POSITIVA EN BASE DE DATOS INTERNA (MODIFICAR)
+                                /*var active = baseDeDatos.result;
+                                var data = active.transaction(["global_variables"], "readwrite");
+                                var object = data.objectStore("global_variables");
+
+                                var request = object.get(1);
+                                request.onsuccess = function() {
+                                    var data = request.result;
+                                    data.confirmacion = true;
+
+                                    var requestActualizado = object.put(data);
+                                    requestActualizado.onsuccess = function() {
+                                        alert('Usuario confirmado, por favor elige un avatar en Configuracion');
+                                        //REDIRECCIONANDO A categorias.html
+                                        window.location.href = "categorias.html";
+                                    };
+                                    requestActualizado.onerror = function (e) {
+                                        alert(request.error.name + '\n\n' + request.error.message);
+                                    };
+                                };
+                                return false; */
+                            }else{
+                                window.location.href = "admin_panel.html";
+                            }
+                        };
+                        /******************************************************************************/
+                    }
+                };
+                //verificacionUsuario();
+            }
+
+            function login(){
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+                if(username != "" && password != ""){
+                    $.ajax({
+                        type: 'POST',
+                        url: 'config/login.php',
+                        data: {
+                            username: username,
+                            password: password
+                        },
+
+                        success: function (respuesta) {
+                            if(respuesta == "Welcome..."){
+                                var active = baseDeDatos.result;
+                                var data = active.transaction(["global_variables"], "readwrite");
+                                var object = data.objectStore("global_variables");
+
+                                var request = object.get(1);
+                                request.onsuccess = function() {
+                                    var data = request.result;
+                                    data.permission = true;
+
+                                    var requestActualizado = object.put(data);
+                                    requestActualizado.onsuccess = function() {
+                                        alert(respuesta);
+                                        window.location.href = "admin_panel.html"; 
+                                    };
+                                    requestActualizado.onerror = function (e) {
+                                        alert(request.error.name + '\n\n' + request.error.message);
+                                    };
+                                };
+                            }
+                        },
+
+                        error: function() { 
+                            alert("There was a problem trying to login, please try again later"); 
+                        } 
+                    }); 
+                    return false;
+                }else{
+                    alert("Please fill both fields");
+                }
+            }
+
+            function filter(id){
+                var text = document.getElementById(id).value;
+
+                if(text.indexOf("|") >= 0 || text.indexOf("!") >= 0 || text.indexOf('"') >= 0 || text.indexOf("#") >= 0 || text.indexOf("$") >= 0 || text.indexOf("%") >= 0 || text.indexOf("&") >= 0 || text.indexOf("/") >= 0 || text.indexOf("(") >= 0 || text.indexOf(")") >= 0 || text.indexOf("=") >= 0 || text.indexOf("?") >= 0 || text.indexOf("¡") >= 0 || text.indexOf("[") >= 0 || text.indexOf("]") >= 0 || text.indexOf("'") >= 0 || text.indexOf("*") >= 0 || text.indexOf("+") >= 0 || text.indexOf(";") >= 0 || text.indexOf(",") >= 0 || text.indexOf("_") >= 0 || text.indexOf("-") >= 0 || text.indexOf("{") >= 0 || text.indexOf("}") >= 0 || text.indexOf(":") >= 0){
+                    text = text.slice(0, -1) + "";
+                }
+
+                if(text == "SELECT" || text == "DELETE" || text == "INSERT INTO" || text == "WHERE"){
+                    alert("Not allowed term");
+                    text = text.replace(text, "");
+                }
+                document.getElementById(id).value = text.toUpperCase();
+
+                if(id == "password"){
+                    document.getElementById("password").autocomplete = 'off';
+                }
+            }
+
+            mql.addListener(detection_orientation);
+
+            function detection_orientation(){
+                if (window.mql.matches) {
+                    vertical_alignment();
+                }else{
+                    horizontal_alignment();
+                }
+            }
+
+            function vertical_alignment(){
+                document.getElementById("area_01").style.width = "80%";
+                document.getElementById("area_01").style.left = "10%";
+                document.getElementById("text_01").style.fontSize = "200%";
+                document.getElementById("text_01").style.top = "15%";
+
+                document.getElementById("area_02").style.width = "80%";
+                document.getElementById("area_02").style.left = "10%";
+                document.getElementById("area_03").style.width = "80%";
+                document.getElementById("area_03").style.left = "10%";
+            }
+
+            function horizontal_alignment(){
+                document.getElementById("area_01").style.width = "60%";
+                document.getElementById("area_01").style.left = "20%";
+                document.getElementById("text_01").style.fontSize = "280%";
+                document.getElementById("text_01").style.top = "0%";
+
+                document.getElementById("area_02").style.width = "40%";
+                document.getElementById("area_02").style.left = "30%";
+                document.getElementById("area_03").style.width = "20%";
+                document.getElementById("area_03").style.left = "40%";
+            }
+
+            function anverse_effect(id){
+                if(window.temp_switch == true){
+                    if(window.contact_state < 10) {
+                        window.contact_state = window.contact_state + 0.3;
+                        var color_val = window.contact_state / 10;
+                    }else{
+                        window.contact_state = 10;
+                        window.temp_switch = false;
+                        return false;
+                    }
+
+                    setTimeout(function() {
+                        document.getElementById(id).style.color = "rgba(255, 255, 255, " + color_val + ")";
+                        document.getElementById(id).style.backgroundColor = "rgba(102, 102, 102, " + color_val + ")";
+                        document.getElementById(id).style.borderColor = "rgba(255, 255, 255, " + color_val + ")";
+                        anverse_effect(id);
+                    }, 5);
+                }
+            }
+
+            function reverse_effect(id){
+                if(window.temp_switch == false){
+                    if(window.contact_state > 0) {
+                        window.contact_state = window.contact_state - 0.3;
+                        var color_val = Math.round(((window.contact_state)/10)*250);
+                        var alpha_bkg = Math.abs(window.contact_state/10);
+                    }else{
+                        window.contact_state = 0;
+                        window.temp_switch = true;
+                        return false;
+                    }
+
+                    setTimeout(function() {
+                        document.getElementById(id).style.color = "rgba(" + color_val + ", " + color_val + ", " + color_val + ", 1)";
+                        document.getElementById(id).style.backgroundColor = "rgba(255, 255, 255, " + alpha_bkg + ")";
+                        document.getElementById(id).style.borderColor = "rgba(" + color_val + ", " + color_val + ", " + color_val + ", 1)";
+                        reverse_effect(id);
+                    }, 5);
+                }                           
+            }
+        </script>
+    </head>
+    <body onload="start()">   
+        <div id="area_01">
+            <div id="text_01">Login</div>
+        </div>
+        <div id="area_02">
+            <input type="text" id="username" placeholder="Username" onkeypress="filter(this.id)" onkeyup="filter(this.id)"/><br>
+            <input type="password" id="password" placeholder="Password" onkeypress="filter(this.id)" onkeyup="filter(this.id)"/><br>
+            <button id="login" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="login()">Login</button>
+        </div>
+        <div id="area_03">
+            <div id="copyright">Copyright © 2018 BAETES All right reserved</div>
+        </div>
+    </body>
+</html>

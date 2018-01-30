@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale = 1, maximum-scale = 1"/></meta>
+        <title>Baetes demo</title>
+        <script src="js/jquery-1.7.1.min.js"></script>
+        <script src="js/sjcl.js"></script>
+        <script src="js/babylon.js"></script>
+        <script src="js/hand.minified-1.2.js"></script>
+        <script src="js/babylon.js"></script>
+        <style type="text/css">
+            @font-face {
+                font-family:"open-sans-regular";
+                src:url("fonts/open-sans-regular.ttf");
+            }
+
+            @font-face {
+                font-family:"open-sans-bold";
+                src:url("fonts/open-sans-bold.ttf");
+            }
+
+            body{
+                color:#fff;
+                overflow-x:hidden;
+                overflow-y:scroll;
+                background-color:#eee9e6;
+            }
+
+            #title {
+                position:absolute;
+                font-size:280%;
+                width:100%;
+                height:22%;
+                left:0%;
+                top:10%;
+                font-family:"IowanOldStyle-Roman";
+                font-size:340%;
+                color:black;
+                text-align:center;
+                color:black;
+            }
+
+            #companies, #subscribers {
+                position:absolute;
+                width:100%;
+                height:100%;
+                left:0%;
+            }
+
+            #companies {
+                top:20%;
+            }
+
+            #subscribers {
+                top:120%;
+            }
+
+
+            @font-face {
+                font-family:"open-sans-regular";
+                src:url("fonts/open-sans-regular.ttf");
+            }
+
+            @font-face {
+                font-family:"open-sans-bold";
+                src:url("fonts/open-sans-bold.ttf");
+            }
+
+            body{
+                color:#fff;
+                overflow-x:hidden;
+                overflow-y:scroll;
+            }
+
+            #companies_title {
+                position:absolute;
+                width:100%;
+                height:22%;
+                left:0%;
+                top:10%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:250%;
+                color:black;
+                text-align:center;
+            }
+
+            #label_company_search {
+                position:absolute;
+                top:22%;
+                left:10%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:120%;
+                color:black;
+                text-align:center;
+            }
+
+            #field_company_search {
+                position:absolute;
+                width:30%;
+                top:22%;
+                left:30%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:120%;
+                color:black;
+                text-align:center;
+            }
+
+            #company_img_search {
+                position:absolute;
+                width:auto;
+                height:7%;
+                top:22%;
+                left:65%;
+            }
+
+            .btn {
+                position:absolute;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:90%;
+                color:black;
+                text-align:center;
+                border-style:solid;
+                border-color:black;
+                border-width:1px;
+                background:transparent;
+                cursor:pointer;
+            }
+
+            #btn_create, #btn_edit, #btn_delete, #btn_export_excel {
+                position:absolute;
+                font-size:150%;
+                width:10%;
+                height:8%;
+                top:28%;
+            }
+
+            #btn_create {
+                left:12%;
+            }
+
+            #btn_edit {
+                left:34%;
+            }
+
+            #btn_delete {
+                left:56%;
+            }
+
+            #btn_export_excel {
+                left:78%;
+            }
+
+            #company_elements {
+                position:absolute;
+                width:90%;
+                height:42%;
+                top:40%;
+                left:5%;
+                overflow:scroll;
+            }
+
+            table {
+                width:100%;
+                border:1px solid black;
+            }
+
+            th, td {
+                padding: 15px;
+                text-align: left;
+                border:1px solid black;
+                color:black;
+            }
+
+            #form {
+                position:absolute;
+                top:-100%;
+                left:0%;
+                width:100%;
+                height:100%;
+                border-style: none;
+                background-image: url('img/modal.png');
+                background-position: 50% 50%; 
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                z-index:1;
+            }
+
+            #operation_name {
+                position:absolute;
+                width:40%;
+                height:20%;
+                left:30%;
+                top:10%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:200%;
+                color:white;
+                text-align:center;
+                text-shadow: 7px 7px 7px #000000;
+            }
+
+            #close {
+                position:fixed;
+                width:5%;
+                height:auto;
+                top:2%;
+                left:92%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:200%;
+                color:black;
+                cursor:pointer;
+                z-index:1;
+            }
+
+            #label_company_name, #label_company_url, #label_company_logo, #label_company_text {
+                position:absolute;
+                width:20%;
+                left:20%;
+                text-shadow: 7px 7px 7px #000000;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:150%;
+                color:white;
+                text-align:center;
+            }
+
+            #field_company_name, #field_company_url, #field_company_logo, #field_company_text, #logo_aux {
+                position:absolute;
+                width:30%;
+                left:43%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:150%;
+                color:black;
+                text-align:center;
+                z-index:0;
+            }
+
+            #label_company_name, #field_company_name {
+                top:25%;
+            }
+
+            #label_company_url, #field_company_url {
+                top:35%;
+            }
+
+            #label_company_logo, #field_company_logo, #logo_aux {
+                top:45%;
+            }
+
+            #label_company_text, #field_company_text {
+                top:55%;
+            }
+
+            #field_company_logo {
+                z-index:1;
+                opacity:0;
+            }
+
+            #logo_aux {
+                overflow:hidden;
+                color:white;
+                border-color:white;
+                z-index:0;
+            }
+
+            #btn_operation, #btn_cancel {
+                position:absolute;
+                width:20%;
+                height:8%;
+                top:85%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:150%;
+                color:white;
+                border-color:white;
+                text-align:center;
+                cursor:pointer;
+            }
+
+            #btn_operation {
+                left:20%;
+            }
+
+            #btn_cancel {
+                left:55%;
+            }
+
+            #title_subscribers {
+                position:absolute;
+                width:100%;
+                height:22%;
+                left:0%;
+                top:10%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:250%;
+                color:black;
+                text-align:center;
+            }
+
+            #btn_export_excel_subscribers {
+                position:absolute;
+                font-size:150%;
+                width:20%;
+                height:8%;
+                top:28%;
+                left:40%;
+            }
+
+            #elements {
+                position:absolute;
+                width:90%;
+                height:42%;
+                top:40%;
+                left:5%;
+                overflow:scroll;
+            }
+        </style>
+        <script>
+            //PUBLIC VARIABLES
+            var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.OIndexedDB || window.msIndexedDB;
+            var baseDeDatos = null;
+            var permission_state = false;
+            var nro_fila;
+            var form_mov_val = -100;
+            var operation_type = "";
+            var contact_state = 0;
+            var temp_switch = true;
+
+            //ESTABLECIENDO CONTACTO CON LA BASE DE DATOS INTERNA
+            function start() {
+                //DESHABILITAR BOTON USUARIOS
+                find_companies("All");
+                find_subscribers("All");
+                /*document.getElementById("btn_create").disabled = true;
+                document.getElementById("btn_create").style.background = "darkgray";
+
+                document.getElementById("btn_edit").disabled = true;
+                document.getElementById("btn_edit").style.background = "darkgray";
+
+                document.getElementById("btn_delete").disabled = true;
+                document.getElementById("btn_delete").style.background = "darkgray";*/
+
+                baseDeDatos = indexedDB.open('baetes_fe_db_01', 1);
+
+                baseDeDatos.onupgradeneeded = function (e) {
+                    var active = baseDeDatos.result;
+                    var global_variables_object = active.createObjectStore("global_variables", {keyPath: 'id', autoIncrement: true});
+                    global_variables_object.createIndex('Permission', 'permission', {unique: false});
+                };
+
+                baseDeDatos.onsuccess = function (e) {
+                    console.log("Configuracion correctamente accesada");
+                    extract_global_variables();
+                };
+                
+                baseDeDatos.onerror = function (e) {
+                    alert("Navegador incompatible con configuracion de seguridad");
+                };
+            }
+
+            //EXTRAYENDO VARIABLES PARA EL COMPORTAMIENTO DE LA WEB-APP
+            function extract_global_variables(){
+                var variables_activas = baseDeDatos.result;
+                var variables_datos = variables_activas.transaction(["global_variables"], "readonly");
+                var variables_object = variables_datos.objectStore("global_variables");
+                var request = variables_object.get(1);
+                request.onsuccess = function () {
+                    var result = request.result;
+                    if (result !== undefined) {
+                        window.permission_state = result.permission;
+                        console.log(window.permission_state);
+                        if(window.permission_state == true){
+                            //HACER NADA
+                        }else{
+                            alert("Access not allowed");
+                            window.location.href = "index.html";
+                        }
+                    }else{
+                        alert("Access not allowed");
+                        window.location.href = "index.html";
+                    }
+                }
+            }
+
+            //CERRANDO LA SESION
+            function close_session(){
+                var confirm_yes_no = confirm("Are you sure to close the session?");
+                if(confirm_yes_no == true){
+                    //VACIANDO REGISTRO CON DATOS DE USUARIO
+                    var activity_close = baseDeDatos.result;
+                    var data_cerrar = activity_close.transaction(["global_variables"], "readwrite");
+                    var objects = data_cerrar.objectStore("global_variables");
+
+                    var request = objects.get(1);
+
+                    request.onsuccess = function() {
+                        var datos = request.result;
+                        datos.permission = false;
+
+                        var request_actualizada = objects.put(datos);
+                        request_actualizada.onsuccess = function() {
+                            setTimeout(function() {
+                                window.location.href = "index.html";
+                            }, 500);
+                        };
+                        request_actualizada.onerror = function(e){
+                            alert("There was a problem trying to close the session: " + e);
+                            window.location.href = "index.html";
+                        };
+                    };
+                }               
+            }
+
+            function find_companies(criterio){
+                if(document.getElementById("field_company_search").value != ""){
+                    criterio = document.getElementById("field_company_search").value;
+                }else{
+                    criterio = "All";
+                }
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'config/search_companies.php',
+                    data: {
+                       criterio: criterio
+                    },
+
+                    success: function (respuesta) {
+                        if(respuesta.includes(",*") == true){
+                            //SEPARAR VALORES DE LA CADENA DE RETORNO
+                            var datos_separados = [];
+                            datos_separados = respuesta.split(",*");
+                            //LLENANDO TABLA CON LOS DATOS RECIBIDOS DE LA BD EXTERNA
+                            var outerHTML = "";
+                            for(i=0;i<datos_separados.length;i+=5){
+                                var company_id = datos_separados[i];
+                                var company_name = datos_separados[i + 1];
+                                var company_url = datos_separados[i + 2];
+                                var company_logo = datos_separados[i + 3];
+                                var company_text = datos_separados[i + 4];
+                                outerHTML += '\n\
+                                <tr>\n\
+                                    <td id="company_id_' + i + '" onclick="mark(' + i + ')">' + company_id + '</td>\n\
+                                    <td id="company_name_' + i + '" onclick="mark(' + i + ')">' + company_name + '</td>\n\
+                                    <td id="company_url_' + i + '" onclick="mark(' + i + ')">' + company_url + '</td>\n\
+                                    <td id="company_logo_' + i + '" onclick="mark(' + i + ')">' + company_logo + '</td>\n\
+                                    <td id="company_text_' + i + '" onclick="mark(' + i + ')">' + company_text + '</td>\n\
+                                </tr>';
+                            }
+                            document.getElementById("company_elements_list").innerHTML = outerHTML;
+
+                            //DESHABILITAR BOTONES DE MODIFICAR Y ELIMINAR
+                            document.getElementById("btn_edit").disabled = true;
+                            document.getElementById("btn_edit").style.background = "darkgray";
+                            document.getElementById("btn_delete").disabled = true;
+                            document.getElementById("btn_delete").style.background = "darkgray";
+                        }else{
+                            alert("There is no records");
+                        }
+                    },
+
+                    error: function() { 
+                        alert("There was a problem trying to connect to database, cod:u110124"); 
+                    } 
+                }); 
+                return false;
+            }
+
+            function find_subscribers(criterio){
+                criterio = "All";
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'config/search_subscribers.php',
+                    data: {
+                       criterio: criterio
+                    },
+
+                    success: function (respuesta) {
+                        if(respuesta.includes(",*") == true){
+                            //SEPARAR VALORES DE LA CADENA DE RETORNO
+                            var datos_separados = [];
+                            datos_separados = respuesta.split(",*");
+                            //LLENANDO TABLA CON LOS DATOS RECIBIDOS DE LA BD EXTERNA
+                            var outerHTML = "";
+                            for(i=0;i<datos_separados.length;i+=2){
+                                var id_subscriber = datos_separados[i];
+                                var email_subscriber = datos_separados[i + 1];
+                                //var nombre_cuenta = datos_separados[i + 3];
+                                //var contrasena = datos_separados[i + 4];
+                                outerHTML += '\n\
+                                <tr>\n\
+                                    <td id="id_' + i + '" onclick="marcar(' + i + ')">' + id_subscriber + '</td>\n\
+                                    <td id="nombre_' + i + '" onclick="marcar(' + i + ')">' + email_subscriber + '</td>\n\
+                                </tr>';
+                            }
+                            document.getElementById("elements_list").innerHTML = outerHTML;
+                        }else{
+                            alert("There is no records");
+                        }
+                    },
+
+                    error: function() { 
+                        alert("There was a problem trying to connect to database, cod:u110124"); 
+                    } 
+                }); 
+                return false;
+            }
+
+            function mark(fila){
+                //MARCANDO LA FILA SELECCIONADA
+                document.getElementById("company_id_" + fila).style.background = "yellow";
+                document.getElementById("company_name_" + fila).style.background = "yellow";
+                document.getElementById("company_url_" + fila).style.background = "yellow";
+                document.getElementById("company_logo_" + fila).style.background = "yellow";
+                document.getElementById("company_text_" + fila).style.background = "yellow";
+
+                document.getElementById("btn_edit").disabled = false;
+                document.getElementById("btn_edit").style.background = "white";
+                document.getElementById("btn_delete").disabled = false;
+                document.getElementById("btn_delete").style.background = "white";
+
+                //GUARDANDO ID DE USUARIO EN VARIABLE PUBLICA
+                window.nro_fila = fila;
+            }
+
+            function show_form(){
+                if (window.form_mov_val==0) { 
+                    var temp = document.getElementsByTagName("body");
+                    temp[0].style.overflowY = "hidden";
+                    return;
+                } else if(window.form_mov_val!=0) {
+                    window.form_mov_val = window.form_mov_val + 2;
+                }
+                setTimeout(function() {
+                    document.getElementById("form").style.top = window.form_mov_val + "%";
+                    show_form();
+                }, 28);
+            }
+
+            function hide_form(){
+                if (window.form_mov_val==-100) { 
+                    var temp = document.getElementsByTagName("body");
+                    temp[0].style.overflowY = "scroll";
+                    return; 
+                } else if(window.form_mov_val!=-100) {
+                    window.form_mov_val = window.form_mov_val - 2;
+                }
+                setTimeout(function() {
+                    document.getElementById("form").style.top = window.form_mov_val + "%";
+                    hide_form();
+                }, 28);
+            }
+
+            function create_company(){
+                //LLENAR DATOS EN form
+                document.getElementById("field_company_name").value = "";
+                document.getElementById("field_company_url").value = "";
+                document.getElementById("field_company_text").value = "";
+
+                //TIPO DE OPERACION
+                window.operation_type = "Create";
+                document.getElementById("operation_name").innerHTML = "Add new company";
+
+                show_form();
+            }
+
+            function edit_company(){
+                var field_1 = document.getElementById("company_name_" + window.nro_fila).innerHTML;
+                var field_2 = document.getElementById("company_url_" + window.nro_fila).innerHTML;
+                var field_3 = document.getElementById("company_text_" + window.nro_fila).innerHTML;
+
+                document.getElementById("field_company_name").value = field_1;
+                document.getElementById("field_company_url").value = field_2;
+                document.getElementById("field_company_text").value = field_3;
+
+                //TIPO DE OPERACION
+                window.operation_type = "Edit";
+                document.getElementById("operation_name").innerHTML = "Edit company data";
+
+                show_form();
+            }
+
+            function operation_company(){
+                var co_name = document.getElementById("field_company_name").value;
+                var co_url = document.getElementById("field_company_url").value;
+                var co_text = document.getElementById("field_company_text").value;
+                var form_data = new FormData();
+                             
+                if(window.operation_type == "Create"){
+                    if(co_name != "" && co_url != "" && co_text != ""){
+                        form_data.append("company_name", co_name);
+                        form_data.append("company_url", co_url);
+                        form_data.append("company_logo", document.getElementById("field_company_logo").files[0]);
+                        form_data.append("company_text", co_text);
+                        $.ajax({
+                            type: 'POST',
+                            url: 'config/add_company.php',
+                            data: form_data,
+                            contentType: false,
+                            processData: false,
+                            success: function (creation_response) {
+                                alert(creation_response);
+                                if(creation_response == "Company data successfully stored"){
+                                    document.getElementById("field_company_name").value = "";
+                                    document.getElementById("field_company_url").value = "";
+                                    document.getElementById("field_company_logo").value = "";
+                                    document.getElementById("field_company_text").value = "";
+
+                                    find_companies("All");
+
+                                    //OCULTAR form
+                                    hide_form();
+
+                                    return false;
+                                }
+                            },
+
+                            error: function() { 
+                                alert("There was an error trying to connect to database"); 
+                            } 
+                        }); 
+                        return false;
+                    }else{
+                        alert("Please fill all fields");
+                    } 
+                }else if(window.operation_type == "Edit"){
+                    var id_modificar = parseInt(document.getElementById("company_id_" + window.nro_fila).innerHTML);
+                    if(co_name != "" && co_url != "" && co_text != ""){
+                        form_data.append("id_modificar", id_modificar);
+                        form_data.append("company_name", co_name);
+                        form_data.append("company_url", co_url);
+                        form_data.append("company_logo", document.getElementById("field_company_logo").files[0]);
+                        form_data.append("company_text", co_text);
+                        $.ajax({
+                            type: 'POST',
+                            url: 'config/edit_company.php',
+                            data: form_data,
+                            contentType: false,
+                            processData: false,
+                            success: function (edit_response) {
+                                alert(edit_response);
+                                if(edit_response == "Company data successfully modified"){
+                                    document.getElementById("field_company_name").value = "";
+                                    document.getElementById("field_company_url").value = "";
+                                    document.getElementById("field_company_logo").value = "";
+                                    document.getElementById("field_company_text").value = "";
+
+                                    find_companies("All");
+                                    //OCULTAR form
+                                    hide_form();
+
+                                    return false;
+                                }
+                            },
+
+                            error: function() { 
+                                alert("There was an error trying to connect to database"); 
+                            } 
+                        }); 
+                        return false;
+                    }else{
+                        alert("Please fill all fields");
+                    } 
+                }
+            }
+
+            function delete_company(){
+                var option = confirm("Are you sure to delete this record");
+                if(option == true){
+                    var id_delete = document.getElementById("company_id_" + window.nro_fila).innerHTML;
+                    $.ajax({
+                        type: 'POST',
+                        url: 'config/delete_company.php',
+                        data: {
+                           id_delete: id_delete
+                        },
+
+                        success: function (delete_response) {
+                            alert(delete_response);
+                            if(delete_response == "Company data successfully deleted"){
+                                find_companies("All");
+
+                                //OCULTAR form
+                                hide_form();
+
+                                return false;
+                            }
+                        },
+
+                        error: function() { 
+                            alert("There was an error trying to connect to database"); 
+                        } 
+                    }); 
+                    return false;
+                }
+            }
+
+            function cancel(){
+                //VACIAR form
+                document.getElementById("field_company_name").value = "";
+                document.getElementById("field_company_url").value = "";
+                document.getElementById("field_company_logo").value = "";
+                document.getElementById("field_company_text").value = "";
+
+                hide_form();
+            }
+
+            function text_filter(id){
+                var texto = document.getElementById(id).value;
+
+                if(texto.indexOf("|") >= 0 || texto.indexOf("!") >= 0 || texto.indexOf('"') >= 0 || texto.indexOf("#") >= 0 || texto.indexOf("$") >= 0 || texto.indexOf("%") >= 0 || texto.indexOf("&") >= 0 || texto.indexOf("/") >= 0 || texto.indexOf("(") >= 0 || texto.indexOf(")") >= 0 || texto.indexOf("=") >= 0 || texto.indexOf("?") >= 0 || texto.indexOf("¡") >= 0 || texto.indexOf("[") >= 0 || texto.indexOf("]") >= 0 || texto.indexOf("'") >= 0 || texto.indexOf("*") >= 0 || texto.indexOf("+") >= 0 || texto.indexOf(";") >= 0 || texto.indexOf(",") >= 0 || texto.indexOf("_") >= 0 || texto.indexOf("-") >= 0 || texto.indexOf("{") >= 0 || texto.indexOf("}") >= 0 || texto.indexOf(":") >= 0){
+                    texto = texto.slice(0, -1) + "";
+                }
+
+                if(texto == "SELECT" || texto == "DELETE" || texto == "INSERT INTO" || texto == "WHERE"){
+                    alert("Not allowed term");
+                    texto = texto.replace(texto, "");
+                }
+                //document.getElementById(id).value = texto.toUpperCase();
+            }
+
+            function export_to_excel_companies(){
+                var temporal = document.createElement('a');
+                var data_type = 'data:application/vnd.ms-excel';
+                var tabla_div = document.getElementById('table_results_companies');
+                var tabla_html = tabla_div.outerHTML.replace(/ /g, '%20');
+                temporal.href = data_type + ', ' + tabla_html;
+                temporal.download = 'companies.xls';
+                temporal.click();
+            }
+
+            function export_to_excel_subscribers(){
+                var temporal = document.createElement('a');
+                var data_type = 'data:application/vnd.ms-excel';
+                var tabla_div = document.getElementById('table_results_subscribers');
+                var tabla_html = tabla_div.outerHTML.replace(/ /g, '%20');
+                temporal.href = data_type + ', ' + tabla_html;
+                temporal.download = 'subscribers.xls';
+                temporal.click();
+            }
+
+            function anverse_effect(id){
+                if(window.temp_switch == true){
+                    if(window.contact_state < 10) {
+                        window.contact_state = window.contact_state + 0.3;
+                        var color_val = window.contact_state / 10;
+                    }else{
+                        window.contact_state = 10;
+                        window.temp_switch = false;
+                        return false;
+                    }
+
+                    setTimeout(function() {
+                        //document.getElementById(id).style.color = "rgba(255, 255, 255, " + color_val + ")";
+                        document.getElementById(id).style.backgroundColor = "rgba(102, 102, 102, " + color_val + ")";
+                        //document.getElementById(id).style.borderColor = "rgba(255, 255, 255, " + color_val + ")";
+                        anverse_effect(id);
+                    }, 5);
+                }
+            }
+
+            function reverse_effect(id){
+                if(window.temp_switch == false){
+                    if(window.contact_state > 0) {
+                        window.contact_state = window.contact_state - 0.3;
+                        var color_val = Math.round(((window.contact_state)/10)*250);
+                        var alpha_bkg = Math.abs(window.contact_state/10);
+                    }else{
+                        window.contact_state = 0;
+                        window.temp_switch = true;
+                        return false;
+                    }
+
+                    setTimeout(function() {
+                        //document.getElementById(id).style.color = "rgba(" + color_val + ", " + color_val + ", " + color_val + ", 1)";
+                        document.getElementById(id).style.backgroundColor = "rgba(255, 255, 255, " + alpha_bkg + ")";
+                        //document.getElementById(id).style.borderColor = "rgba(" + color_val + ", " + color_val + ", " + color_val + ", 1)";
+                        reverse_effect(id);
+                    }, 5);
+                }                           
+            }
+
+            function image_message(evt, identificador){
+                var files = evt.target.files; // FileList object
+                   
+                //Obtenemos la imagen del campo "file". 
+                for (var i = 0, f; f = files[i]; i++) {         
+                    //Solo admitimos imágenes.
+                    if (!f.type.match('image.*')) {
+                        continue;
+                    }
+                   
+                    document.getElementById("logo_aux").innerHTML = files[i].name;
+                }
+                alert("Image successfully loaded.");
+            }
+        </script>
+    </head>
+    <body onload="start()">   
+        <div id="title">Admin panel (demo)</div>
+        <img id="close" src="img/close.png" onclick="close_session()"/>
+
+        <div id="companies">
+            <div id="companies_title">Companies</div>
+
+            <div id="label_company_search">Search company's name:</div>
+            <input id="field_company_search" type="text" placeholder="" onkeypress="text_filter(this.id)" onkeyup="text_filter(this.id)" required/>
+            <img id="company_img_search" src="img/buscar.png" onclick="find_companies()"/>
+
+            <button id="btn_create" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="create_company()">Create</button>
+            <button id="btn_edit" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="edit_company()">Edit</button>
+            <button id="btn_delete" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="delete_company()">Delete</button>
+            <button id="btn_export_excel" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="export_to_excel_companies()">Export to Excel</button>
+
+            <div id="company_elements">
+                <table id="table_results_companies">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Company name</th>
+                            <th>URL</th>
+                            <th>Logo</th>
+                            <th>Text</th>
+                        </tr>
+                    </thead>
+                    <tbody id="company_elements_list">
+                        <tr>
+                            <td colspan="3">There is no elements to show</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+
+        <div id="subscribers">
+            <div id="title_subscribers">Subscribers (demo)</div>
+            <button id="btn_export_excel_subscribers" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="export_to_excel_subscribers()">Export to Excel</button>
+            <div id="elements">
+                <table id="table_results_subscribers">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Subscriber email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="elements_list">
+                        <tr>
+                            <td colspan="3">No hay elements para mostrar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+
+        <div id="form">
+            <div id="operation_name">Operation</div>
+
+            <div id="label_company_name">Name:</div>
+            <input id="field_company_name" type="text" onkeypress="text_filter(this.id)" onkeyup="text_filter(this.id)" required/>
+
+            <div id="label_company_url">URL:</div>
+            <input id="field_company_url" type="text" required/>
+
+            <div id="label_company_logo">Logo:</div>
+            <input id="field_company_logo" type="file" onchange="image_message(event, this.id)" onmouseover="anverse_effect('logo_aux')" onmouseout="reverse_effect('logo_aux')"/>
+            <button id="logo_aux" class="btn">Load company logo</button>
+
+            <div id="label_company_text">Text:</div>
+            <textarea id="field_company_text" type="password" onkeypress="text_filter(this.id)" onkeyup="text_filter(this.id)" required></textarea>
+
+            <button id="btn_operation" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="operation_company()">Save</button>
+            <button id="btn_cancel" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="cancel()">Cancel</button>
+        </div>
+    </body>
+</html>

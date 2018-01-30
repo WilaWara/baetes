@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale = 1, maximum-scale = 1"/></meta>
+        <meta name="description" content="E-commerce's VR, AR and 3D virtualizations"/>
+        <title>VR, AR and 3D | Baetes</title>
+        <script src="js/jquery-1.7.1.min.js"></script>
+        <script src="js/sjcl.js"></script>
+        <script src="js/babylon.js"></script>
+        <script src="js/hand.minified-1.2.js"></script>
+        <script src="js/babylon.js"></script>
+        <!--<script src="js/index.js"></script>-->
+        <style type="text/css">
+            @font-face {
+                font-family:"LemonMilkBold";
+                src:url("fonts/LemonMilkbold.otf");
+            }
+
+            @font-face {
+                font-family:"LemonMilkLight";
+                src:url("fonts/LemonMilklight.otf");
+            }
+
+            @font-face {
+                font-family:"helvetica";
+                src:url("fonts/HELR45W.ttf");
+            }
+
+            @font-face {
+                font-family:"IowanOldStyle-Roman";
+                src:url("fonts/IowanOldStBTRoman.ttf");
+            }
+
+            @font-face {
+                font-family:"Mark-Book";
+                src:url("fonts/markpro.otf");
+            }
+
+            body{
+                color:#fff;
+                overflow-x:hidden;
+            }
+
+            #section_1, #section_2, #section_3, #section_4 {
+                position:absolute;
+                width:100%;
+                height:100%;
+                left:0%;
+                background-color:#eee9e6;
+            }
+
+            #section_1 {
+                top:0%;
+            }
+
+            #section_2 {
+                top:100%;
+            }
+
+            #section_3 {
+                height:100%;
+                top:200%;
+                overflow-y:scroll;
+                overflow-x:hidden;
+            }
+
+            #section_4 {
+                top:300%;
+            }
+
+            #header {
+                position:fixed;
+                width:100%;
+                height:10%;
+                left:0%;
+                top:0%;
+                background-color:transparent;
+                z-index:2;
+                border-style:none none solid none;
+                border-color:transparent;
+                border-width:1px;
+            }
+
+            #logo {
+                position:absolute;
+                width:15%;
+                height:auto;
+                left:5%;
+                top:40%;
+                /*font-family:"LemonMilkLight";
+                font-size:110%;
+                color:black;
+                text-align:left;*/
+            }
+
+            #globe {
+                position:absolute;
+                width:5%;
+                height:auto;
+                left:90%;
+                top:38%;
+                visibility:hidden;
+                cursor:pointer;
+                z-index:2;
+            }
+
+            #deployable_menu {
+                position:fixed;
+                width:22%;
+                height:30%;
+                left:78%;
+                top:-30%;
+                background-image: url('img/modal2.png');
+                background-position: 50% 50%; 
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                z-index:2;
+            }
+
+            #login, #showcases, #english, #japanese, #italian {
+                position:absolute;
+                top:40%;
+                font-family:"Mark-Book";
+                font-size:95%;
+                color:white;
+                text-align:left;
+                cursor:pointer;
+            }
+
+            #login {
+                left:64%;
+            }
+
+            #showcases {
+                left:70%;
+            }
+
+            #english {
+                left:82%;
+                text-decoration: underline;
+                text-underline-position: under;
+            }
+
+            #japanese {
+                left:86%;
+            }
+
+            #italian {
+                left:92%;
+            }
+
+            #english_deployable, #japanese_deployable, #italian_deployable {
+                position:absolute;
+                width:50%;
+                left:40%;
+                font-family:"Mark-Book";
+                font-size:95%;
+                color:white;
+                text-align:center;
+                cursor:pointer;
+                visibility:hidden;
+            }
+
+            #english_deployable {
+                top:40%;
+            }
+
+            #japanese_deployable {
+                top:60%;
+            }
+
+            #italian_deployable {
+                top:80%;
+            }
+
+            #live_360 {
+                position:absolute;
+                z-index:0;
+                overflow:hidden;
+                background-size: 100% 100%;
+                top: 0px;
+                left: 0px; /* fixed to left. Replace it by right if you want.*/
+                min-width: 100%;
+                min-height: 100%;
+                width: auto;
+                height: auto;
+            }
+
+            #dark_layer {
+                position:absolute;
+                width:100%;
+                height:100%;
+                left:0%;
+                top:0%;
+                background-image: url('img/modal2.png');
+                background-position: 50% 50%; 
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                z-index:1;
+            }
+
+            #title {
+                position:absolute;
+                width:50%;
+                left:25%;
+                top:30%;
+                /*font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-family:"LemonMilkLight";
+                font-size:340%;
+                color:white;
+                text-align:center;*/
+                z-index:2;
+            }
+
+            #subtitle {
+                position:absolute;
+                width:60%;
+                left:20%;
+                top:45%;
+                font-family:"IowanOldStyle-Roman";
+                font-size:240%;
+                color:white;
+                text-align:center;
+                z-index:2;
+            }
+
+            #twist_360, #click_n_drag /*, #scroll_down_txt*/ {
+                position:absolute;
+                width:40%;
+                left:30%;
+                font-family:"IowanOldStyle-Roman";
+                font-size:100%;
+                color:white;
+                text-align:center;
+                z-index:2;
+                /*cursor:pointer;*/
+            }
+
+            #twist_360 {
+                top:63%;
+            }
+
+            .btn {
+                position:absolute;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:90%;
+                color:black;
+                text-align:center;
+                border-style:solid;
+                border-color:black;
+                border-width:1px;
+                background:transparent;
+                cursor:pointer;
+            }
+
+            #apply {
+                width:40%;
+                height:8%;
+                left:30%;
+                top:73%;
+                color:white;
+                border-color:white;
+                font-size:80%;
+            }
+
+            #contact {
+                width:18%;
+                height:8%;
+                left:10%;
+                top:78%;
+                z-index:1;
+            }
+
+            #vr {
+                position:absolute;
+                width:18%;
+                height:auto;
+                left:41%;
+                top:56%;
+                z-index:2;
+                cursor:pointer;
+                visibility:hidden;
+            }
+
+            /*#click_n_drag {
+                top:65%;
+            }*/
+
+            /*#scroll_down_txt {
+                top:88%;
+                cursor:pointer;
+            }*/
+
+            #scroll_down_btn {
+                position:absolute;
+                width:4%;
+                height:7%;
+                left:48%;
+                top:89%;
+                background-color:transparent;
+                background-image: url('img/down.png');
+                background-position: 50% 50%; 
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                border-style:none;
+                z-index:2;
+                cursor:pointer;
+            }
+
+            #area_01 {
+                position:absolute;
+                width:40%;
+                height:45%;
+                left:10%;
+                top:15%;
+            }
+
+            #text_01, #text_02, #text_03 {
+                position:absolute;
+                width:100%;
+                height:50%;
+                left:0%;
+                font-family:"IowanOldStyle-Roman";
+                color:black;
+                text-align:left;
+            }
+
+            #text_01 {
+                top:0%;
+                font-size:210%;
+                /*opacity:0;*/
+            }
+
+            #text_02 {
+                top:50%;
+                font-size:80%;
+                /*opacity:0;*/
+            }
+
+            #text_03 {
+                left:70%;
+                top:85%;
+                font-size:80%;
+                z-index:1;
+            }
+
+            #model_3d {
+                position:absolute;
+                width:50%;
+                height:70%;
+                left:50%;
+                top:15%;
+                background-color:transparent;
+                z-index:0;
+                cursor:pointer;
+            }
+
+            #model_3d:focus {
+                outline:none;
+            }
+
+            #main {
+                position:absolute;
+                width:100%;
+                height:45%;
+                top:0%;
+                left:0%;
+            }
+
+            #title_showcases {
+                position:absolute;
+                width:100%;
+                height:20%;
+                top:35%;
+                left:0%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:340%;
+                color:black;
+                text-align:center;
+            }
+
+            #subtitle_showcases {
+                position:absolute;
+                width:100%;
+                height:15%;
+                top:65%;
+                left:0%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:100%;
+                color:black;
+                text-align:center;
+            }
+
+            #contact_showcases {
+                position:absolute;
+                width:12%;
+                height:12%;
+                left:44%;
+                top:82%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:100%;
+                color:black;
+                text-align:center;
+                border-style:solid;
+                border-color:black;
+                border-width:1px;
+                background:transparent;
+                cursor:pointer;
+            }
+
+            #showcase_01, #showcase_02, #showcase_03 {
+                position:absolute;
+                width:100%;
+                height:55%;
+                left:0%;  
+            }
+
+            #showcase_01 {
+                top:45%;
+            }
+
+            #showcase_02 {
+                top:100%;
+            }
+
+            #showcase_03 {
+                top:155%;
+            }
+
+            .sample_source {
+                position:absolute;
+                width:100%;
+                height:60%;
+                left:0%;
+                top:0%;
+            }
+
+            .sample_name {
+                position:absolute;
+                width:100%;
+                height:20%;
+                left:0%;
+                top:25%;
+                color:white;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:300%;
+                text-align:center;
+                pointer-events: none;
+            }
+
+            .sample_logo {
+                position:absolute;
+                width:auto;
+                height:15%;
+                left:15%;
+                top:68%;
+            }
+
+            .sample_text {
+                position:absolute;
+                width:55%;
+                height:30%;
+                left:45%;
+                top:65%;
+                color:black;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size:100%;
+                text-align:left;
+            }
+
+            #area_02 {
+                position:absolute;
+                width:60%;
+                height:20%;
+                left:20%;
+                top:20%;
+            }
+
+            #text_04, #text_05 {
+                position:absolute;
+                width:100%;
+                height:50%;
+                left:0%;
+                font-family:"IowanOldStyle-Roman";
+                color:black;
+                text-align:center;
+                /*opacity:0;*/
+            }
+
+            #text_04 {
+                top:0%;
+                font-size:280%;
+            }
+
+            #text_05 {
+                top:93%;
+                font-size:80%;
+            }
+
+            #area_03 {
+                position:absolute;
+                width:40%;
+                height:25%;
+                left:30%;
+                top:45%;
+                border-style:solid;
+                border-color:black;
+                border-width:1px;
+            }
+
+            #subscriber_email {
+                position:absolute;
+                width:80%;
+                height:20%;
+                left:10%;
+                top:20%;
+                border-style:none none solid none;
+                border-color:black;
+                border-width:1px;
+                background-color:transparent;
+                text-align:center;
+            }
+
+            #subscribe {
+                position:absolute;
+                width:40%;
+                height:25%;
+                left:30%;
+                top:60%;
+                border-style:solid;
+                border-color:black;
+                border-width:1px;
+                background-color:transparent;
+                cursor:pointer;
+                font-size:80%;
+            }
+
+            #area_04 {
+                position:absolute;
+                width:20%;
+                height:22%;
+                left:40%;
+                top:75%;
+            }
+
+            #text_06, #copyright {
+                position:absolute;
+                position:absolute;
+                width:100%;
+                height:50%;
+                left:0%;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                color:black;
+                text-align:center;
+            }
+
+            #text_06 {
+                top:10%;
+                font-size:80%;
+                /*opacity:0;*/
+            }
+
+            .icons {
+                position:absolute;
+                height:auto;
+                top:40%;
+                cursor:pointer;
+            }
+
+            #facebook {
+                width:6%;
+                left:25%;
+            }
+
+            #instagram {
+                width:10%;
+                left:42%;
+            }
+
+            #email {
+                width:10%;
+                left:62%;
+            }
+
+            #copyright {
+                top:80%;
+                font-size:60%;
+                opacity:0.5;
+            }
+        </style>
+        <script>
+            var top_dark_layer = 0;
+            var scroll_down_animation_status = "on";
+            var scroll_down_top = 92;
+            var scroll_down_pos = "up";
+            
+            var deployable_menu_status = "off";
+            var deployable_menu_top = -30;
+
+            var txt_01_opacity = 0;
+            var txt_01_pos = -50;
+            var txt_02_opacity = 0;
+            var txt_02_pos = -50;
+            var txt_03_opacity = 0;
+            var txt_03_pos = -50;
+
+            var view_position = 0;
+            var allow_animation_section_1 = true;
+            var allow_animation_section_2 = true;
+
+            var contact_state = 0;
+            var temp_switch = true;
+
+            var click_drag_animation_status = "on";
+            var click_drag_top = 80;
+            var click_drag_pos = "up";
+
+            var mql = window.matchMedia("(orientation: portrait)");
+
+            function start(){
+                click_drag_animation();
+                detection_orientation();
+                load_model();
+                document.getElementById("header").style.backgroundColor = "transparent";
+                document.getElementById("header").style.borderStyle = "none";
+                document.getElementById("logo").src = "img/logo_baetes.png";
+                document.getElementById("english").style.color = "white";
+                document.getElementById("japanese").style.color = "white";
+            }
+
+            function load_model(){
+                var canvas = document.getElementById("model_3d");
+                var engine = new BABYLON.Engine(canvas, true);
+
+                var createScene = function () {
+                    var scene = new BABYLON.Scene(engine);
+                    scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+
+                    camera = new BABYLON.ArcRotateCamera("Camera", 1.2, 1.5, 20, BABYLON.Vector3.Zero(), scene);
+                    camera.attachControl(canvas, true);
+
+                    camera.lowerRadiusLimit = camera.upperRadiusLimit = 20;
+
+                    var light1 = new BABYLON.HemisphericLight("hemi1", new BABYLON.Vector3(0, 1, 0), scene);
+                    light1.intensity = 1.5;
+                    var light2 = new BABYLON.HemisphericLight("hemi2", new BABYLON.Vector3(0, -1, 0), scene);
+                    light2.intensity = 1.5;
+
+                    BABYLON.SceneLoader.ImportMesh("", "babylon/", "final_shoes_03.babylon", scene, function (newMeshes) {
+                        scene.registerBeforeRender(function() { 
+                            window.camera.alpha += 0.01;
+                        });
+                    });
+
+                    return scene;
+                };
+
+                var scene = createScene();
+
+                engine.runRenderLoop(function () {
+                    scene.render();
+                });
+
+                window.addEventListener("resize", function () {
+                    engine.resize();
+                });
+            }
+
+            function add_subscription(){
+                var email = document.getElementById("subscriber_email").value;
+                if(email != ""){
+                    var filtro = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+                    if (filtro.test(email)){
+                        $.ajax({
+                            type: 'POST',
+                            url: 'config/add_subscription.php',
+                            data: {
+                                email: email
+                            },
+
+                            success: function (respuesta) {
+                                if(respuesta == "Thank you, SOME MESSAGE HERE"){
+                                    alert(respuesta);
+                                }else{
+                                    alert("There was a problem, please try again later: " + respuesta);
+                                }
+                            },
+
+                            error: function() { 
+                                alert("There was a problem, please try again later"); 
+                            } 
+                        }); 
+                        return false;
+                    }else{
+                        alert("Wrong format for email address");
+                        return;
+                    }
+                }else{
+                    alert("Please write some email first");
+                }
+            }
+
+            function scroll_down(){
+                window.scroll_down_animation_status = "off";
+                if (window.view_position >= document.getElementById("dark_layer").clientHeight) { 
+                    window.view_position = 0;
+                    return; 
+                }else if(window.view_position < document.getElementById("dark_layer").clientHeight) {
+                    window.view_position = window.view_position + 10;
+                }
+                setTimeout(function() {
+                    window.scrollTo(0, window.view_position);
+                    scroll_down();
+                }, 5);
+            }
+
+            function scroll_down_showcases(){
+                window.scroll_down_animation_status = "off";
+                if (window.view_position >= document.getElementById("dark_layer").clientHeight + document.getElementById("section_2").clientHeight) { 
+                    window.view_position = 0;
+                    return; 
+                }else if(window.view_position < document.getElementById("dark_layer").clientHeight + document.getElementById("section_2").clientHeight) {
+                    window.view_position = window.view_position + 15;
+                }
+                setTimeout(function() {
+                    window.scrollTo(0, window.view_position);
+                    scroll_down_showcases();
+                }, 5);
+            }
+
+            function scroll_down_apply(){
+                window.scroll_down_animation_status = "off";
+                if (window.view_position >= document.getElementById("dark_layer").clientHeight + document.getElementById("section_2").clientHeight + document.getElementById("section_3").clientHeight) { 
+                    window.view_position = 0;
+                    return; 
+                }else if(window.view_position < document.getElementById("dark_layer").clientHeight + document.getElementById("section_2").clientHeight + document.getElementById("section_3").clientHeight) {
+                    window.view_position = window.view_position + 20;
+                }
+                setTimeout(function() {
+                    window.scrollTo(0, window.view_position);
+                    scroll_down_apply();
+                }, 5);
+            }
+
+            document.addEventListener('scroll', function(){
+                var h = document.documentElement, 
+                    b = document.body,
+                    st = 'scrollTop',
+                    sh = 'scrollHeight';
+                var percent = (h[st]||b[st]) / ((h[sh]||b[sh]) - h.clientHeight) * 100;
+                //console.log('scrolled: ' + percent + '%');
+                if(percent < 30){
+                    document.getElementById("header").style.backgroundColor = "transparent";
+                    document.getElementById("header").style.borderStyle = "none";
+                    document.getElementById("logo").src = "img/logo_baetes.png";
+                    document.getElementById("globe").src = "img/globe.png";
+                    document.getElementById("english").style.color = "white";
+                    document.getElementById("japanese").style.color = "white";
+                    document.getElementById("italian").style.color = "white";
+                    document.getElementById("login").style.color = "white";
+                    document.getElementById("showcases").style.color = "white";
+                    /*document.getElementById("english_deployable").style.color = "white";
+                    document.getElementById("japanese_deployable").style.color = "white";
+                    document.getElementById("italian_deployable").style.color = "white";*/
+                }else{
+                    document.getElementById("header").style.backgroundColor = "#e0d7d1 ";
+                    document.getElementById("header").style.borderStyle = "none none solid none";
+                    document.getElementById("header").style.borderColor = "black";
+                    document.getElementById("header").style.borderWidth = "1px";
+                    document.getElementById("logo").src = "img/logo_baetes_black.png";
+                    document.getElementById("globe").src = "img/globe_black.png";
+                    document.getElementById("english").style.color = "black";
+                    document.getElementById("japanese").style.color = "black";
+                    document.getElementById("italian").style.color = "black";
+                    document.getElementById("login").style.color = "black";
+                    document.getElementById("showcases").style.color = "black";
+                    /*document.getElementById("english_deployable").style.color = "black";
+                    document.getElementById("japanese_deployable").style.color = "black";
+                    document.getElementById("italian_deployable").style.color = "black";*/
+                }
+            });
+
+            function click_drag_animation(){
+                window.allow_animation_section_1 = false;
+                if(window.click_drag_animation_status == "on"){
+                    if(window.click_drag_pos == "up"){
+                        if (window.click_drag_top >= 81) {
+                            window.click_drag_pos = "down"; 
+                        }else{
+                            window.click_drag_top = window.click_drag_top + 0.05;
+                        }
+                    }else if(window.click_drag_pos == "down"){
+                        if (window.click_drag_top <= 79) {
+                            window.click_drag_pos = "up"; 
+                        }else{
+                            window.click_drag_top = window.click_drag_top - 0.05;
+                        }                        
+                    }
+
+                    setTimeout(function() {
+                        document.getElementById("text_03").style.top = window.click_drag_top + "%";
+                        click_drag_animation();
+                    }, 10);
+                }else if(window.click_drag_animation_status == "off"){
+                    document.getElementById("text_03").style.top = "80%";
+                }
+            }
+
+            function anverse_effect(id){
+                if(id == "apply"){
+                    if(window.temp_switch == true){
+                        if(window.contact_state < 10) {
+                            window.contact_state = window.contact_state + 0.3;
+                            var color_val = window.contact_state / 10;
+                        }else{
+                            window.contact_state = 10;
+                            window.temp_switch = false;
+                            return false;
+                        }
+
+                        setTimeout(function() {
+                            document.getElementById("apply").style.color = "rgba(0, 0, 0, " + color_val + ")";
+                            document.getElementById("apply").style.backgroundColor = "rgba(255, 255, 255, " + color_val + ")";
+                            anverse_effect(id);
+                        }, 5);
+                    }
+                }else if(id == "contact"){
+                    if(window.temp_switch == true){
+                        if(window.contact_state < 10) {
+                            window.contact_state = window.contact_state + 0.3;
+                            var color_val = window.contact_state / 10;
+                        }else{
+                            window.contact_state = 10;
+                            window.temp_switch = false;
+                            return false;
+                        }
+
+                        setTimeout(function() {
+                            document.getElementById("contact").style.color = "rgba(255, 255, 255, " + color_val + ")";
+                            document.getElementById("contact").style.backgroundColor = "rgba(102, 102, 102, " + color_val + ")";
+                            document.getElementById("contact").style.borderColor = "rgba(255, 255, 255, " + color_val + ")";
+                            anverse_effect(id);
+                        }, 5);
+                    }
+                }else if(id == "contact_showcases"){
+                    if(window.temp_switch == true){
+                        if(window.contact_state < 10) {
+                            window.contact_state = window.contact_state + 0.3;
+                            var color_val = window.contact_state / 10;
+                        }else{
+                            window.contact_state = 10;
+                            window.temp_switch = false;
+                            return false;
+                        }
+
+                        setTimeout(function() {
+                            document.getElementById("contact_showcases").style.color = "rgba(255, 255, 255, " + color_val + ")";
+                            document.getElementById("contact_showcases").style.backgroundColor = "rgba(102, 102, 102, " + color_val + ")";
+                            document.getElementById("contact_showcases").style.borderColor = "rgba(255, 255, 255, " + color_val + ")";
+                            anverse_effect(id);
+                        }, 5);
+                    }
+                }
+            }
+
+            function reverse_effect(id){
+                if(id == "apply"){
+                    if(window.temp_switch == false){
+                        if(window.contact_state > 0) {
+                            window.contact_state = window.contact_state - 0.3;
+                            var color_val = Math.round(((10 - window.contact_state)/10)*250);
+                            var alpha_bkg = Math.abs(window.contact_state/10);
+                        }else{
+                            window.contact_state = 0;
+                            window.temp_switch = true;
+                            return false;
+                        }
+
+                        setTimeout(function() {
+                            document.getElementById("apply").style.color = "rgba(" + color_val + ", " + color_val + ", " + color_val + ", 1)";
+                            document.getElementById("apply").style.backgroundColor = "rgba(255, 255, 255, " + alpha_bkg + ")";
+                            reverse_effect(id);
+                        }, 5);
+                    }
+                }else if(id == "contact"){
+                    if(window.temp_switch == false){
+                        if(window.contact_state > 0) {
+                            window.contact_state = window.contact_state - 0.3;
+                            var color_val = Math.round(((window.contact_state)/10)*250);
+                            var alpha_bkg = Math.abs(window.contact_state/10);
+                        }else{
+                            window.contact_state = 0;
+                            window.temp_switch = true;
+                            return false;
+                        }
+
+                        setTimeout(function() {
+                            document.getElementById("contact").style.color = "rgba(" + color_val + ", " + color_val + ", " + color_val + ", 1)";
+                            document.getElementById("contact").style.backgroundColor = "rgba(238, 233, 230, " + alpha_bkg + ")";
+                            document.getElementById("contact").style.borderColor = "rgba(" + color_val + ", " + color_val + ", " + color_val + ", 1)";
+                            reverse_effect(id);
+                        }, 5);
+                    }
+                }else if(id == "contact_showcases"){
+                    if(window.temp_switch == false){
+                        if(window.contact_state > 0) {
+                            window.contact_state = window.contact_state - 0.3;
+                            var color_val = Math.round(((window.contact_state)/10)*250);
+                            var alpha_bkg = Math.abs(window.contact_state/10);
+                        }else{
+                            window.contact_state = 0;
+                            window.temp_switch = true;
+                            return false;
+                        }
+
+                        setTimeout(function() {
+                            document.getElementById("contact_showcases").style.color = "rgba(" + color_val + ", " + color_val + ", " + color_val + ", 1)";
+                            document.getElementById("contact_showcases").style.backgroundColor = "rgba(238, 233, 230, " + alpha_bkg + ")";
+                            document.getElementById("contact_showcases").style.borderColor = "rgba(" + color_val + ", " + color_val + ", " + color_val + ", 1)";
+                            reverse_effect(id);
+                        }, 5);
+                    }
+                }               
+            }
+
+            function facebook(){
+                var new_tab = window.open("https://www.facebook.com/baetesfashion/", "_blank");
+                new_tab.focus();
+            }
+
+            function instagram(){
+                var new_tab = window.open("https://www.instagram.com/baetesfashion/?hl=en", "_blank");
+                new_tab.focus();
+            }
+
+            function contact_us(){
+                var email_msg = window.open("mailto:contact@baetes.com?subject=I want to know more&body=Hi...", "_blank");
+                email_msg.focus();
+            }
+
+            function change_language(language){
+                if(language == "english"){
+                    document.getElementById("english").style.textDecoration = "underline";
+                    document.getElementById("english").style.textUnderlinePosition = "under";
+                    document.getElementById("japanese").style.textDecoration = "none";
+                    document.getElementById("italian").style.textDecoration = "none";
+                }else if(language == "japanese"){
+                    document.getElementById("english").style.textDecoration = "none";
+                    document.getElementById("japanese").style.textDecoration = "underline";
+                    document.getElementById("japanese").style.textUnderlinePosition = "under";
+                    document.getElementById("italian").style.textDecoration = "none";
+                }else if(language == "italian"){
+                    document.getElementById("english").style.textDecoration = "none";
+                    document.getElementById("japanese").style.textDecoration = "none";
+                    document.getElementById("italian").style.textDecoration = "underline";
+                    document.getElementById("italian").style.textUnderlinePosition = "under";
+                }
+            }
+
+            function login(){
+                window.location.href = "login.html";
+            }
+
+            mql.addListener(detection_orientation);
+
+            function detection_orientation(){
+                if (window.mql.matches) {
+                    vertical_alignment();
+                }else{
+                    horizontal_alignment();
+                }
+            }
+
+            function vertical_alignment(){
+                document.getElementById("logo").style.width = "40%";
+
+                document.getElementById("login").style.visibility = "hidden";
+                document.getElementById("login").disabled = true;
+                document.getElementById("showcases").style.visibility = "hidden";
+                document.getElementById("showcases").disabled = true;
+                document.getElementById("english").style.visibility = "hidden";
+                document.getElementById("english").disabled = true;
+                document.getElementById("japanese").style.visibility = "hidden";
+                document.getElementById("japanese").disabled = true;
+                document.getElementById("italian").style.visibility = "hidden";
+                document.getElementById("italian").disabled = true;
+
+                document.getElementById("globe").style.visibility = "visible";
+
+                document.getElementById("english_deployable").style.visibility = "visible";
+                document.getElementById("english_deployable").disabled = false;
+                document.getElementById("japanese_deployable").style.visibility = "visible";
+                document.getElementById("japanese_deployable").disabled = false;
+                document.getElementById("italian_deployable").style.visibility = "visible";
+                document.getElementById("italian_deployable").disabled = false;
+
+                document.getElementById("title").style.width = "70%";
+                document.getElementById("title").style.left = "15%";
+
+                document.getElementById("subtitle").style.width = "80%";
+                document.getElementById("subtitle").style.left = "10%";
+                document.getElementById("subtitle").style.top = "40%";
+                document.getElementById("subtitle").innerHTML = "Next generation of fashion e-commerce";
+                document.getElementById("subtitle").style.fontSize = "112%";
+
+                document.getElementById("vr").style.visibility = "visible";
+
+                document.getElementById("twist_360").style.visibility = "hidden";
+
+                document.getElementById("apply").style.visibility = "hidden";
+                document.getElementById("apply").disabled = true;
+
+                document.getElementById("scroll_down_btn").style.width = "10%";
+                document.getElementById("scroll_down_btn").style.left = "45%";
+                
+                document.getElementById("area_01").style.width = "100%";
+                document.getElementById("area_01").style.left = "0%";
+
+                document.getElementById("text_01").style.textAlign = "center";
+                document.getElementById("text_02").style.textAlign = "center";
+                document.getElementById("text_02").style.top = "130%";
+                document.getElementById("model_3d").style.top = "27%";
+                document.getElementById("model_3d").style.width = "100%";
+                document.getElementById("model_3d").style.left = "0%";
+                document.getElementById("model_3d").style.height = "50%";
+                document.getElementById("text_03").style.opacity = "0";
+
+                document.getElementById("contact").style.visibility = "hidden";
+                document.getElementById("contact").disabled = true;
+
+                document.getElementById("area_02").style.width = "80%";
+                document.getElementById("area_02").style.left = "10%";
+                document.getElementById("text_04").style.fontSize = "150%";
+                document.getElementById("text_04").style.top = "15%";
+
+                document.getElementById("area_03").style.width = "80%";
+                document.getElementById("area_03").style.left = "10%";
+                document.getElementById("area_04").style.width = "80%";
+                document.getElementById("area_04").style.left = "10%";
+
+                document.getElementById("title_showcases").style.width = "70%";
+                document.getElementById("title_showcases").style.left = "15%";
+
+                document.getElementById("contact_showcases").style.width = "30%";
+                document.getElementById("contact_showcases").style.left = "35%";
+
+                temp = document.getElementsByClassName("sample_logo");
+                for(i=0;i<3;i++){
+                    temp[i].style.height = "10%";
+                    temp[i].style.left = "5%";
+                }
+
+                temp = document.getElementsByClassName("sample_text");
+                for(i=0;i<3;i++){
+                    temp[i].style.fontSize = "80%";
+                    temp[i].style.top = "62%";
+                }
+            }
+
+            function horizontal_alignment(){
+                document.getElementById("logo").style.width = "15%";
+
+                document.getElementById("login").style.visibility = "visible";
+                document.getElementById("login").disabled = false;
+                document.getElementById("showcases").style.visibility = "visible";
+                document.getElementById("showcases").disabled = false;
+                document.getElementById("english").style.visibility = "visible";
+                document.getElementById("english").disabled = false;
+                document.getElementById("japanese").style.visibility = "visible";
+                document.getElementById("japanese").disabled = false;
+                document.getElementById("italian").style.visibility = "visible";
+                document.getElementById("italian").disabled = false;
+
+                document.getElementById("globe").style.visibility = "hidden";
+
+                document.getElementById("english_deployable").style.visibility = "hidden";
+                document.getElementById("english_deployable").disabled = true;
+                document.getElementById("japanese_deployable").style.visibility = "hidden";
+                document.getElementById("japanese_deployable").disabled = true;
+                document.getElementById("italian_deployable").style.visibility = "hidden";
+                document.getElementById("italian_deployable").disabled = true;
+
+                document.getElementById("title").style.width = "50%";
+                document.getElementById("title").style.left = "25%";
+
+                document.getElementById("subtitle").style.width = "60%";
+                document.getElementById("subtitle").style.left = "20%";
+                document.getElementById("subtitle").style.top = "45%";
+                document.getElementById("subtitle").innerHTML = "Taking the physical shopping experience to your browser";
+                document.getElementById("subtitle").style.fontSize = "240%";
+
+                document.getElementById("vr").style.visibility = "hidden";
+                document.getElementById("vr").disabled = true;
+
+                document.getElementById("twist_360").style.visibility = "visible";
+
+                document.getElementById("apply").style.visibility = "visible";
+                document.getElementById("apply").disabled = false;
+
+                document.getElementById("scroll_down_btn").style.width = "4%";
+                document.getElementById("scroll_down_btn").style.left = "48%";
+                
+                document.getElementById("area_01").style.width = "40%";
+                document.getElementById("area_01").style.left = "10%";
+
+                document.getElementById("text_01").style.textAlign = "left";
+                document.getElementById("text_02").style.textAlign = "left";
+                document.getElementById("text_02").style.top = "50%";
+                document.getElementById("model_3d").style.top = "15%";
+                document.getElementById("model_3d").style.width = "50%";
+                document.getElementById("model_3d").style.left = "50%";
+                document.getElementById("model_3d").style.height = "70%";
+                document.getElementById("text_03").style.opacity = "1";
+
+                document.getElementById("contact").style.visibility = "visible";
+                document.getElementById("contact").disabled = false;
+
+                document.getElementById("area_02").style.width = "60%";
+                document.getElementById("area_02").style.left = "20%";
+                document.getElementById("text_04").style.fontSize = "280%";
+                document.getElementById("text_04").style.top = "0%";
+
+                document.getElementById("area_03").style.width = "40%";
+                document.getElementById("area_03").style.left = "30%";
+                document.getElementById("area_04").style.width = "20%";
+                document.getElementById("area_04").style.left = "40%";
+
+                document.getElementById("title_showcases").style.width = "50%";
+                document.getElementById("title_showcases").style.left = "25%";
+
+                document.getElementById("contact_showcases").style.width = "12%";
+                document.getElementById("contact_showcases").style.left = "44%";
+
+                temp = document.getElementsByClassName("sample_logo");
+                for(i=0;i<3;i++){
+                    temp[i].style.height = "15%";
+                    temp[i].style.left = "15%";
+                }
+
+                temp = document.getElementsByClassName("sample_text");
+                for(i=0;i<3;i++){
+                    temp[i].style.fontSize = "100%";
+                    temp[i].style.top = "65%";
+                }
+            }
+
+            function menu(){
+                if(window.deployable_menu_status == "off"){
+                    if(window.deployable_menu_top >= 0){
+                        window.deployable_menu_top = 0;
+                        window.deployable_menu_status = "on";
+                        return false;
+                    }else if(window.deployable_menu_top < 0){
+                        window.deployable_menu_top += 5;
+
+                        setTimeout(function(){
+                            document.getElementById("deployable_menu").style.top = window.deployable_menu_top + "%";
+                            menu();
+                        }, 5);
+                    }
+                }else if(window.deployable_menu_status == "on"){
+                    if(window.deployable_menu_top <= -30){
+                        window.deployable_menu_top = -30;
+                        window.deployable_menu_status = "off";
+                        return false;
+                    }else if(window.deployable_menu_top > -30){
+                        window.deployable_menu_top -= 5;
+
+                        setTimeout(function(){
+                            document.getElementById("deployable_menu").style.top = window.deployable_menu_top + "%";
+                            menu();
+                        }, 5);
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body onload="start()">   
+        <div id="section_1">
+            <div id="deployable_menu">
+                <div id="english_deployable" onclick="change_language(this.id)">EN</div>
+                <div id="japanese_deployable" onclick="change_language(this.id)">JP</div>
+                <div id="italian_deployable" onclick="change_language(this.id)">IT</div>
+            </div>
+            <div id="header">
+                <img id="logo" src="img/logo_baetes.png"/>
+                <img id="globe" src="img/globe.png" onclick="menu()"/>
+
+                <div id="login" onclick="login()">Login</div>
+                <div id="showcases" onclick="scroll_down_showcases()">Showcases</div>
+
+                <div id="english" onclick="change_language(this.id)">EN</div>
+                <div id="japanese" onclick="change_language(this.id)">日本語</div>
+                <div id="italian" onclick="change_language(this.id)">IT</div>
+            </div>
+            
+            <!--<iframe id="live_360"></iframe>
+            <video id="live_360" autoplay loop>
+                <source src="video/baetes.mp4" type="video/mp4">
+                Your browser does not support HTML5 video.
+            </video>-->
+            <iframe id="live_360" src="https://www.youtube.com/embed/NNYJwpkUaTU?autoplay=1&loop=1&showinfo=0&controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+            <div id="dark_layer">
+                <img id="title" src="img/logo_baetes.png"/>
+                <div id="subtitle">Taking the physical shopping experience to your browser</div>
+                <div id="twist_360">Create the greatest online shopping experience you can possibly give your customers</div>
+                <img id="vr" src="img/vr.png"/>
+                <!--<div id="click_n_drag">Click and drag!</div>-->
+                <button id="apply" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="scroll_down_apply()">APPLY FOR A VIRTUALIZATION</button>
+            </div>
+            <!--<div id="scroll_down_txt" onclick="scroll_down()">Scroll down</div>-->
+            <button id="scroll_down_btn" onclick="scroll_down()"></button>
+        </div>
+        <div id="section_2">
+            <div id="area_01">
+                <div id="text_01">
+                    Create an immersive<br>experience anywhere<br>on your site.
+                </div>
+                <div id="text_02">
+                    With the help of the latest VR, AR and 3D<br>scanning technology, we have built a system<br>that allows brands to increase their sales,<br>customer engagement and have a great<br>potential to change the industry to making the<br>immersive experience anywhere on your site, and<br>take your e-commerce into the next generation of<br>V-shopping.
+                </div>
+            </div>
+
+            <button id="contact" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="contact_us()">CONTACT US</button>
+            <canvas id="model_3d">Your browser don't allow WebGL</canvas>
+            <div id="text_03">Click and drag!</div>
+        </div>
+        <div id="section_3">
+            <div id="main">
+                <div id="title_showcases">Showcases</div>
+                <div id="subtitle_showcases">Build your virtual reality showcase like these, contact us now</div>
+                <button id="contact_showcases" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="contact_us()">Contact</button>
+            </div>
+            <div id="showcase_01">
+                <!--<iframe class="sample_source" src="http://wilawara.tk/demos/vrstoredemo/"></iframe>-->
+                <img class="sample_source" src="img/asket.jpg"/>
+                <div class="sample_name">Asket</div>
+                <img class="sample_logo" src="img/asket.png"/>
+                <div class="sample_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat</div>
+            </div>
+            <div id="showcase_02">
+                <!--<iframe class="sample_source" src="http://wilawara.tk/demos/vrstoredemo/"></iframe>-->
+                <img class="sample_source" src="img/acne.jpg"/>
+                <div class="sample_name">Acne</div>
+                <img class="sample_logo" src="img/acne.png"/>
+                <div class="sample_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat</div>
+            </div>
+            <div id="showcase_03">
+                <!--<iframe class="sample_source" src="http://wilawara.tk/demos/vrstoredemo/"></iframe>-->
+                <img class="sample_source" src="img/rakuten.jpg"/>
+                <div class="sample_name">Rakuten</div>
+                <img class="sample_logo" src="img/rakuten.png"/>
+                <div class="sample_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat</div>
+            </div>
+        </div>
+        <div id="section_4">
+            <div id="area_02">
+                <div id="text_04">
+                    Create the next generation of<br>e-commerce, today.
+                </div>
+                <div id="text_05">
+                    Subscribe to stay updated.
+                </div>
+            </div>
+            <div id="area_03">
+                <input type="text" id="subscriber_email" placeholder="Your email address"/>
+                <button id="subscribe" class="btn" onclick="add_subscription()">SUBSCRIBE</button>
+            </div>
+            <div id="area_04">
+                <div id="text_06">
+                    Follow/Contact us
+                </div>
+                <img id="facebook" class="icons" src="img/facebook.png" onclick="facebook()"/>
+                <img id="instagram" class="icons" src="img/instagram.png" onclick="instagram()"/>
+                <img id="email" class="icons" src="img/email.png" onclick="contact_us()"/>
+                
+                <div id="copyright">Copyright © 2018 BAETES All right reserved</div>
+            </div>
+        </div>
+    </body>
+</html>

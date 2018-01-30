@@ -1,6 +1,7 @@
 <?php
 	global $host,$user,$pass,$db;
 
+	//HERE YOU REPLACE THIS DATA WITH YOUR HOST DATA
 	$host = "sql111.epizy.com";
 	$user = "epiz_21253003";
 	$pass = "I811Cirka0Bb";

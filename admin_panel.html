@@ -143,7 +143,7 @@
             }
 
             table {
-                /*width:100%;*/
+                width:100%;
                 border:1px solid black;
             }
 
@@ -382,16 +382,17 @@
                 document.getElementById("btn_export_excel").style.left = "55%";
                 document.getElementById("btn_export_excel").style.top = "38%";
 
-                document.getElementById("companies").style.overflowX = "scroll";
-                document.getElementById("company_elements").style.width = "300%";
+                document.getElementById("company_elements").style.overflowX = "scroll";
                 document.getElementById("company_elements").style.top = "50%";
-
+                document.getElementById("table_results_companies").style.width = "400%";
+                
                 document.getElementById("btn_export_excel_subscribers").style.width = "60%";
                 document.getElementById("btn_export_excel_subscribers").style.left = "20%";
                 
-                document.getElementById("subscribers").style.overflowX = "scroll";
-                document.getElementById("subscribers_elements").style.width = "300%";
+                document.getElementById("subscribers_elements").style.overflowX = "scroll";
                 document.getElementById("subscribers_elements").style.top = "50%";
+                document.getElementById("table_results_subscribers").style.width = "400%";
+               
             }
 
             function horizontal_alignment(){
@@ -414,16 +415,16 @@
                 document.getElementById("btn_export_excel").style.left = "78%";
                 document.getElementById("btn_export_excel").style.top = "28%";
 
-                document.getElementById("companies").style.overflowX = "hidden";
-                document.getElementById("company_elements").style.width = "90%";
+                document.getElementById("company_elements").style.overflowX = "hidden";
                 document.getElementById("company_elements").style.top = "40%";
-
+                document.getElementById("table_results_companies").style.width = "100%";
+                
                 document.getElementById("btn_export_excel_subscribers").style.width = "20%";
                 document.getElementById("btn_export_excel_subscribers").style.left = "40%";
 
-                document.getElementById("subscribers").style.overflowX = "hidden";
-                document.getElementById("subscribers_elements").style.width = "90%";
+                document.getElementById("subscribers_elements").style.overflowX = "hidden";
                 document.getElementById("subscribers_elements").style.top = "40%";
+                document.getElementById("table_results_subscribers").style.width = "100%";
             }
 
             function close_session(){

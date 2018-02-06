@@ -56,23 +56,6 @@
                 top:120%;
             }
 
-
-            @font-face {
-                font-family:"open-sans-regular";
-                src:url("fonts/open-sans-regular.ttf");
-            }
-
-            @font-face {
-                font-family:"open-sans-bold";
-                src:url("fonts/open-sans-bold.ttf");
-            }
-
-            body{
-                color:#fff;
-                overflow-x:hidden;
-                overflow-y:scroll;
-            }
-
             #companies_title {
                 position:absolute;
                 width:100%;
@@ -97,9 +80,9 @@
 
             #field_company_search {
                 position:absolute;
-                width:30%;
+                width:35%;
                 top:22%;
-                left:30%;
+                left:35%;
                 font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
                 font-size:120%;
                 color:black;
@@ -109,9 +92,9 @@
             #company_img_search {
                 position:absolute;
                 width:auto;
-                height:7%;
+                height:4%;
                 top:22%;
-                left:65%;
+                left:75%;
             }
 
             .btn {
@@ -161,7 +144,7 @@
             }
 
             table {
-                width:100%;
+                /*width:100%;*/
                 border:1px solid black;
             }
 
@@ -173,7 +156,7 @@
             }
 
             #form {
-                position:absolute;
+                position:fixed;
                 top:-100%;
                 left:0%;
                 width:100%;
@@ -205,9 +188,6 @@
                 height:auto;
                 top:2%;
                 left:92%;
-                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-                font-size:200%;
-                color:black;
                 cursor:pointer;
                 z-index:1;
             }
@@ -283,7 +263,7 @@
                 left:55%;
             }
 
-            #title_subscribers {
+            #subscribers_title {
                 position:absolute;
                 width:100%;
                 height:22%;
@@ -304,7 +284,7 @@
                 left:40%;
             }
 
-            #elements {
+            #subscribers_elements {
                 position:absolute;
                 width:90%;
                 height:42%;
@@ -324,20 +304,10 @@
             var contact_state = 0;
             var temp_switch = true;
 
-            //ESTABLECIENDO CONTACTO CON LA BASE DE DATOS INTERNA
+            var mql = window.matchMedia("(orientation: portrait)");
+
             function start() {
-                //DESHABILITAR BOTON USUARIOS
-                find_companies("All");
-                find_subscribers("All");
-                /*document.getElementById("btn_create").disabled = true;
-                document.getElementById("btn_create").style.background = "darkgray";
-
-                document.getElementById("btn_edit").disabled = true;
-                document.getElementById("btn_edit").style.background = "darkgray";
-
-                document.getElementById("btn_delete").disabled = true;
-                document.getElementById("btn_delete").style.background = "darkgray";*/
-
+                detection_orientation();
                 baseDeDatos = indexedDB.open('baetes_fe_db_01', 1);
 
                 baseDeDatos.onupgradeneeded = function (e) {
@@ -356,7 +326,6 @@
                 };
             }
 
-            //EXTRAYENDO VARIABLES PARA EL COMPORTAMIENTO DE LA WEB-APP
             function extract_global_variables(){
                 var variables_activas = baseDeDatos.result;
                 var variables_datos = variables_activas.transaction(["global_variables"], "readonly");
@@ -368,7 +337,9 @@
                         window.permission_state = result.permission;
                         console.log(window.permission_state);
                         if(window.permission_state == true){
-                            //HACER NADA
+                            //SEARCH FOR COMPANIES AND SUBSCRIBERS
+                            find_companies("All");
+                            find_subscribers("All");
                         }else{
                             alert("Access not allowed");
                             window.location.href = "index.html";
@@ -380,7 +351,82 @@
                 }
             }
 
-            //CERRANDO LA SESION
+            mql.addListener(detection_orientation);
+
+            function detection_orientation(){
+                if (window.mql.matches) {
+                    console.log("vertical");
+                    vertical_alignment();
+                }else{
+                    horizontal_alignment();
+                    console.log("horizontal");
+                }
+            }
+
+            function vertical_alignment(){
+                document.getElementById("close").style.width = "20%";
+                document.getElementById("close").style.left = "77%";
+
+                document.getElementById("label_company_search").innerHTML = "Search:";
+                
+                document.getElementById("btn_create").style.width = "35%";
+                document.getElementById("btn_create").style.left = "10%";
+
+                document.getElementById("btn_edit").style.width = "35%";
+                document.getElementById("btn_edit").style.left = "55%";
+
+                document.getElementById("btn_delete").style.width = "35%";
+                document.getElementById("btn_delete").style.left = "10%";
+                document.getElementById("btn_delete").style.top = "38%";
+
+                document.getElementById("btn_export_excel").style.width = "35%";
+                document.getElementById("btn_export_excel").style.left = "55%";
+                document.getElementById("btn_export_excel").style.top = "38%";
+
+                document.getElementById("companies").style.overflowX = "scroll";
+                document.getElementById("company_elements").style.width = "300%";
+                document.getElementById("company_elements").style.top = "50%";
+
+                document.getElementById("btn_export_excel_subscribers").style.width = "60%";
+                document.getElementById("btn_export_excel_subscribers").style.left = "20%";
+                
+                document.getElementById("subscribers").style.overflowX = "scroll";
+                document.getElementById("subscribers_elements").style.width = "300%";
+                document.getElementById("subscribers_elements").style.top = "50%";
+            }
+
+            function horizontal_alignment(){
+                document.getElementById("close").style.width = "5%";
+                document.getElementById("close").style.left = "92%";
+
+                document.getElementById("label_company_search").innerHTML = "Search company's name:";
+
+                document.getElementById("btn_create").style.width = "10%";
+                document.getElementById("btn_create").style.left = "12%";
+
+                document.getElementById("btn_edit").style.width = "10%";
+                document.getElementById("btn_edit").style.left = "34%";
+
+                document.getElementById("btn_delete").style.width = "10%";
+                document.getElementById("btn_delete").style.left = "56%";
+                document.getElementById("btn_delete").style.top = "28%";
+
+                document.getElementById("btn_export_excel").style.width = "10%";
+                document.getElementById("btn_export_excel").style.left = "78%";
+                document.getElementById("btn_export_excel").style.top = "28%";
+
+                document.getElementById("companies").style.overflowX = "hidden";
+                document.getElementById("company_elements").style.width = "90%";
+                document.getElementById("company_elements").style.top = "40%";
+
+                document.getElementById("btn_export_excel_subscribers").style.width = "20%";
+                document.getElementById("btn_export_excel_subscribers").style.left = "40%";
+
+                document.getElementById("subscribers").style.overflowX = "hidden";
+                document.getElementById("subscribers_elements").style.width = "90%";
+                document.getElementById("subscribers_elements").style.top = "40%";
+            }
+
             function close_session(){
                 var confirm_yes_no = confirm("Are you sure to close the session?");
                 if(confirm_yes_no == true){
@@ -430,7 +476,7 @@
                             datos_separados = respuesta.split(",*");
                             //LLENANDO TABLA CON LOS DATOS RECIBIDOS DE LA BD EXTERNA
                             var outerHTML = "";
-                            for(i=0;i<datos_separados.length;i+=5){
+                            for(i=0;i<datos_separados.length - 1;i+=5){
                                 var company_id = datos_separados[i];
                                 var company_name = datos_separados[i + 1];
                                 var company_url = datos_separados[i + 2];
@@ -453,7 +499,7 @@
                             document.getElementById("btn_delete").disabled = true;
                             document.getElementById("btn_delete").style.background = "darkgray";
                         }else{
-                            alert("There is no records");
+                            alert("There is no companies");
                         }
                     },
 
@@ -481,7 +527,7 @@
                             datos_separados = respuesta.split(",*");
                             //LLENANDO TABLA CON LOS DATOS RECIBIDOS DE LA BD EXTERNA
                             var outerHTML = "";
-                            for(i=0;i<datos_separados.length;i+=2){
+                            for(i=0;i<datos_separados.length - 1;i+=2){
                                 var id_subscriber = datos_separados[i];
                                 var email_subscriber = datos_separados[i + 1];
                                 //var nombre_cuenta = datos_separados[i + 3];
@@ -494,7 +540,7 @@
                             }
                             document.getElementById("elements_list").innerHTML = outerHTML;
                         }else{
-                            alert("There is no records");
+                            alert("There is no subscribers");
                         }
                     },
 
@@ -695,7 +741,6 @@
             }
 
             function cancel(){
-                //VACIAR form
                 document.getElementById("field_company_name").value = "";
                 document.getElementById("field_company_url").value = "";
                 document.getElementById("field_company_logo").value = "";
@@ -832,9 +877,9 @@
         </div>
 
         <div id="subscribers">
-            <div id="title_subscribers">Subscribers (demo)</div>
+            <div id="subscribers_title">Subscribers (demo)</div>
             <button id="btn_export_excel_subscribers" class="btn" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="export_to_excel_subscribers()">Export to Excel</button>
-            <div id="elements">
+            <div id="subscribers_elements">
                 <table id="table_results_subscribers">
                     <thead>
                         <tr>
@@ -844,7 +889,7 @@
                     </thead>
                     <tbody id="elements_list">
                         <tr>
-                            <td colspan="3">No hay elements para mostrar</td>
+                            <td colspan="3">There is no elements to show</td>
                         </tr>
                     </tbody>
                 </table>

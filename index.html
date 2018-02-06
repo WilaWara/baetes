@@ -6,7 +6,6 @@
         <meta name="description" content="E-commerce's VR, AR and 3D virtualizations"/>
         <title>VR, AR and 3D | Baetes</title>
         <script src="js/jquery-1.7.1.min.js"></script>
-        <script src="js/sjcl.js"></script>
         <script src="js/babylon.js"></script>
         <script src="js/hand.minified-1.2.js"></script>
         <script src="js/babylon.js"></script>
@@ -366,6 +365,7 @@
                 height:45%;
                 top:0%;
                 left:0%;
+                z-index:1;
             }
 
             #title_showcases {
@@ -414,6 +414,7 @@
                 width:100%;
                 height:55%;
                 left:0%;
+                top:45%;
             }
 
             /*#showcase_01, #showcase_02, #showcase_03 {
@@ -479,7 +480,7 @@
                 top:65%;
                 color:black;
                 font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-                font-size:100%;
+                font-size:70%;
                 text-align:left;
             }
 
@@ -1200,7 +1201,8 @@
                             }
                             document.getElementById("showcases_subsection").innerHTML = outerHTML;
                             for(i = 0; i < counter; i++){
-                                document.getElementById("showcase_" + (i + 1)).style.top = (counter * 55) + 45 + "%";
+                                document.getElementById("showcase_" + (i + 1)).style.height = "55%";
+                                document.getElementById("showcase_" + (i + 1)).style.top = (i * 55) + "%";
                             }
 
                             var temp;
@@ -1211,6 +1213,7 @@
                                 temp[i].style.height = "60%";
                                 temp[i].style.left = "0%";
                                 temp[i].style.top = "0%";
+                                temp
                             }
 
                             temp = document.getElementsByClassName("sample_name");
@@ -1219,7 +1222,7 @@
                                 temp[i].style.width = "100%";
                                 temp[i].style.height = "20%";
                                 temp[i].style.left = "0%";
-                                temp[i].style.top = "25%";
+                                temp[i].style.top = "15%";
                                 temp[i].style.color = "white";
                                 temp[i].style.fontFamily = "Helvetica Neue, Helvetica, Arial, sans-serif";
                                 temp[i].style.fontSize = "300%";
@@ -1254,13 +1257,13 @@
 
                                 temp = document.getElementsByClassName("sample_text");
                                 for(i=0;i<counter;i++){
-                                    temp[i].style.fontSize = "80%";
+                                    temp[i].style.fontSize = "70%";
                                     temp[i].style.top = "62%";
                                 }
                             }else if(window.browser_position == "Horizontal"){
                                 temp = document.getElementsByClassName("sample_logo");
                                 for(i=0;i<counter;i++){
-                                    temp[i].style.height = "15%";
+                                    temp[i].style.height = "18%";
                                     temp[i].style.left = "15%";
                                 }
 

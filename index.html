@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <meta charset="utf-8"/>
+        <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale = 1, maximum-scale = 1"/></meta>
         <meta name="description" content="E-commerce's VR, AR and 3D virtualizations"/>
         <title>VR, AR and 3D | Baetes</title>
@@ -409,14 +409,28 @@
                 cursor:pointer;
             }
 
-            #showcase_01, #showcase_02, #showcase_03 {
+            #showcases_subsection{
+                position:absolute;
+                width:100%;
+                height:55%;
+                left:0%;
+            }
+
+            /*#showcase_01, #showcase_02, #showcase_03 {
+                position:absolute;
+                width:100%;
+                height:55%;
+                left:0%;  
+            }*/
+
+            .showcase_container {
                 position:absolute;
                 width:100%;
                 height:55%;
                 left:0%;  
             }
 
-            #showcase_01 {
+            /*#showcase_01 {
                 top:45%;
             }
 
@@ -426,7 +440,7 @@
 
             #showcase_03 {
                 top:155%;
-            }
+            }*/
 
             .sample_source {
                 position:absolute;
@@ -616,17 +630,20 @@
             var click_drag_top = 80;
             var click_drag_pos = "up";
 
+            var browser_position;
+
             var mql = window.matchMedia("(orientation: portrait)");
 
             function start(){
-                click_drag_animation();
-                detection_orientation();
-                load_model();
                 document.getElementById("header").style.backgroundColor = "transparent";
                 document.getElementById("header").style.borderStyle = "none";
                 document.getElementById("logo").src = "img/logo_baetes.png";
                 document.getElementById("english").style.color = "white";
                 document.getElementById("japanese").style.color = "white";
+                click_drag_animation();
+                detection_orientation();
+                load_model();
+                load_showcases();
             }
 
             function load_model(){
@@ -679,11 +696,11 @@
                                 email: email
                             },
 
-                            success: function (respuesta) {
-                                if(respuesta == "Thank you, SOME MESSAGE HERE"){
-                                    alert(respuesta);
+                            success: function (response) {
+                                if(response == "Thank you, SOME MESSAGE HERE"){
+                                    alert(response);
                                 }else{
-                                    alert("There was a problem, please try again later: " + respuesta);
+                                    alert("There was a problem, please try again later: " + response);
                                 }
                             },
 
@@ -966,8 +983,10 @@
 
             function detection_orientation(){
                 if (window.mql.matches) {
+                    window.browser_position = "Vertical";
                     vertical_alignment();
                 }else{
+                    window.browser_position = "Horizontal";
                     horizontal_alignment();
                 }
             }
@@ -1044,18 +1063,6 @@
 
                 document.getElementById("contact_showcases").style.width = "30%";
                 document.getElementById("contact_showcases").style.left = "35%";
-
-                temp = document.getElementsByClassName("sample_logo");
-                for(i=0;i<3;i++){
-                    temp[i].style.height = "10%";
-                    temp[i].style.left = "5%";
-                }
-
-                temp = document.getElementsByClassName("sample_text");
-                for(i=0;i<3;i++){
-                    temp[i].style.fontSize = "80%";
-                    temp[i].style.top = "62%";
-                }
             }
 
             function horizontal_alignment(){
@@ -1131,18 +1138,6 @@
 
                 document.getElementById("contact_showcases").style.width = "12%";
                 document.getElementById("contact_showcases").style.left = "44%";
-
-                temp = document.getElementsByClassName("sample_logo");
-                for(i=0;i<3;i++){
-                    temp[i].style.height = "15%";
-                    temp[i].style.left = "15%";
-                }
-
-                temp = document.getElementsByClassName("sample_text");
-                for(i=0;i<3;i++){
-                    temp[i].style.fontSize = "100%";
-                    temp[i].style.top = "65%";
-                }
             }
 
             function menu(){
@@ -1174,6 +1169,118 @@
                     }
                 }
             }
+
+            function load_showcases(){
+                $.ajax({
+                    type: 'POST',
+                    url: 'config/showcases.php',
+                    data: {
+                        criterio: "All"
+                    },
+
+                    success: function (response) {
+                        if(response.includes(",*") == true){
+                            var separated_data = [];
+                            separated_data = response.split(",*");
+                            var counter = 0;
+                            var outerHTML = "";
+                            for(i=0;i<separated_data.length - 1;i+=4){
+                                var company_name = separated_data[i];
+                                var company_url = separated_data[i + 1];
+                                var company_logo = separated_data[i + 2];
+                                var company_description = separated_data[i + 3];
+                                counter++;
+                                outerHTML += '\n\
+                                <div id="showcase_' + counter + '" class="showcase_container">\n\
+                                    <iframe class="sample_source" src="' + company_url + '"></iframe>\n\
+                                    <div class="sample_name">' + company_name + '</div>\n\
+                                    <img class="sample_logo" src="img_companies/' + company_logo + '"/>\n\
+                                    <div class="sample_text">' + company_description + '</div>\n\
+                                </div>';
+                            }
+                            document.getElementById("showcases_subsection").innerHTML = outerHTML;
+                            for(i = 0; i < counter; i++){
+                                document.getElementById("showcase_" + (i + 1)).style.top = (counter * 55) + 45 + "%";
+                            }
+
+                            var temp;
+                            temp = document.getElementsByClassName("sample_source");
+                            for(i=0;i<counter;i++){
+                                temp[i].style.position = "absolute";
+                                temp[i].style.width = "100%";
+                                temp[i].style.height = "60%";
+                                temp[i].style.left = "0%";
+                                temp[i].style.top = "0%";
+                            }
+
+                            temp = document.getElementsByClassName("sample_name");
+                            for(i=0;i<counter;i++){
+                                temp[i].style.position = "absolute";
+                                temp[i].style.width = "100%";
+                                temp[i].style.height = "20%";
+                                temp[i].style.left = "0%";
+                                temp[i].style.top = "25%";
+                                temp[i].style.color = "white";
+                                temp[i].style.fontFamily = "Helvetica Neue, Helvetica, Arial, sans-serif";
+                                temp[i].style.fontSize = "300%";
+                                temp[i].style.textAlign = "center";
+                                temp[i].style.pointerEvents = "none";
+                            }
+
+                            temp = document.getElementsByClassName("sample_logo");
+                            for(i=0;i<counter;i++){
+                                temp[i].style.position = "absolute";
+                                temp[i].style.width = "auto";
+                                temp[i].style.top = "68%";
+                            }
+
+                            temp = document.getElementsByClassName("sample_text");
+                            for(i=0;i<counter;i++){
+                                temp[i].style.position = "absolute";
+                                temp[i].style.width = "55%";
+                                temp[i].style.height = "30%";
+                                temp[i].style.left = "45%";
+                                temp[i].style.color = "black";
+                                temp[i].style.fontFamily = "Helvetica Neue, Helvetica, Arial, sans-serif";
+                                temp[i].style.textAlign = "left";
+                            }
+
+                            if(window.browser_position == "Vertical"){
+                                temp = document.getElementsByClassName("sample_logo");
+                                for(i=0;i<counter;i++){
+                                    temp[i].style.height = "10%";
+                                    temp[i].style.left = "5%";
+                                }
+
+                                temp = document.getElementsByClassName("sample_text");
+                                for(i=0;i<counter;i++){
+                                    temp[i].style.fontSize = "80%";
+                                    temp[i].style.top = "62%";
+                                }
+                            }else if(window.browser_position == "Horizontal"){
+                                temp = document.getElementsByClassName("sample_logo");
+                                for(i=0;i<counter;i++){
+                                    temp[i].style.height = "15%";
+                                    temp[i].style.left = "15%";
+                                }
+
+                                temp = document.getElementsByClassName("sample_text");
+                                for(i=0;i<counter;i++){
+                                    temp[i].style.fontSize = "100%";
+                                    temp[i].style.top = "65%";
+                                }
+                            }
+                        }else{
+                            console.log("Records not found");
+                        }
+                    },
+
+                    error: function() { 
+                        console.log("There was a problem trying to connect to database"); 
+                    } 
+                }); 
+                return false;
+            }
         </script>
     </head>
     <body onload="start()">   
@@ -1195,12 +1302,11 @@
                 <div id="italian" onclick="change_language(this.id)">IT</div>
             </div>
             
-            <!--<iframe id="live_360"></iframe>
             <video id="live_360" autoplay loop>
                 <source src="video/baetes.mp4" type="video/mp4">
                 Your browser does not support HTML5 video.
-            </video>-->
-            <iframe id="live_360" src="https://www.youtube.com/embed/NNYJwpkUaTU?autoplay=1&loop=1&showinfo=0&controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </video>
+            <!--<iframe id="live_360" src="https://www.youtube.com/embed/NNYJwpkUaTU?autoplay=1&loop=1&showinfo=0&controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>-->
 
             <div id="dark_layer">
                 <img id="title" src="img/logo_baetes.png"/>
@@ -1233,27 +1339,29 @@
                 <div id="subtitle_showcases">Build your virtual reality showcase like these, contact us now</div>
                 <button id="contact_showcases" onmouseover="anverse_effect(this.id)" onmouseout="reverse_effect(this.id)" onclick="contact_us()">Contact</button>
             </div>
-            <div id="showcase_01">
-                <!--<iframe class="sample_source" src="http://wilawara.tk/demos/vrstoredemo/"></iframe>-->
+            <div id="showcases_subsection">
+            </div>
+            <!--<div id="showcase_01">
+                <iframe class="sample_source" src="http://wilawara.tk/demos/vrstoredemo/"></iframe>
                 <img class="sample_source" src="img/asket.jpg"/>
                 <div class="sample_name">Asket</div>
                 <img class="sample_logo" src="img/asket.png"/>
                 <div class="sample_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat</div>
             </div>
             <div id="showcase_02">
-                <!--<iframe class="sample_source" src="http://wilawara.tk/demos/vrstoredemo/"></iframe>-->
+                <iframe class="sample_source" src="http://wilawara.tk/demos/vrstoredemo/"></iframe>
                 <img class="sample_source" src="img/acne.jpg"/>
                 <div class="sample_name">Acne</div>
                 <img class="sample_logo" src="img/acne.png"/>
                 <div class="sample_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat</div>
             </div>
             <div id="showcase_03">
-                <!--<iframe class="sample_source" src="http://wilawara.tk/demos/vrstoredemo/"></iframe>-->
+                <iframe class="sample_source" src="http://wilawara.tk/demos/vrstoredemo/"></iframe>
                 <img class="sample_source" src="img/rakuten.jpg"/>
                 <div class="sample_name">Rakuten</div>
                 <img class="sample_logo" src="img/rakuten.png"/>
                 <div class="sample_text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat</div>
-            </div>
+            </div>-->
         </div>
         <div id="section_4">
             <div id="area_02">

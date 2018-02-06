@@ -153,7 +153,6 @@
                 var data = active.transaction(["global_variables"], "readonly");
                 var object = data.objectStore("global_variables");
                 var elements = [];
-                console.log("wooo");
                 object.openCursor().onsuccess = function (e) {
                     var result = e.target.result;
                     if (result === null) {
@@ -260,6 +259,8 @@
 
                                     var requestActualizado = object.put(data);
                                     requestActualizado.onsuccess = function() {
+                                        document.getElementById("username").value = "";
+                                        document.getElementById("password").value = "";
                                         alert(respuesta);
                                         window.location.href = "admin_panel.html"; 
                                     };
@@ -291,7 +292,7 @@
                     alert("Not allowed term");
                     text = text.replace(text, "");
                 }
-                document.getElementById(id).value = text.toUpperCase();
+                //document.getElementById(id).value = text.toUpperCase();
 
                 if(id == "password"){
                     document.getElementById("password").autocomplete = 'off';
